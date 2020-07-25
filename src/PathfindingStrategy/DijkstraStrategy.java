@@ -71,7 +71,7 @@ public class DijkstraStrategy extends PathfindingStrategy
             List<Tile> neighbors = new ArrayList<>();
             Tile temp;
             
-            // add north, south, east, west tile of lowCostTile
+            // add north, south, east, west tile of lowCostTile to neighbors, if they exist
             temp = grid.getNorthTile(lowCostTile);
             if(temp != null) neighbors.add(temp);
             temp = grid.getSouthTile(lowCostTile);

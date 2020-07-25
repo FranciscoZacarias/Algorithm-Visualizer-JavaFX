@@ -34,9 +34,9 @@ public class View implements Observer
     
     // Tile Dimensions
     // Tile amount must be odd numbers! 
-    private final int X_TILES = 9;//49;
-    private final int Y_TILES = 9; //33;
-    private final int TILE_SIZE = 80; //20
+    private final int X_TILES = 49;//49;
+    private final int Y_TILES = 33; //33;
+    private final int TILE_SIZE = 19; //20
     
     // JavaFX Scene Nodes
     private final ToolBar toolBar;
@@ -46,13 +46,14 @@ public class View implements Observer
     private final Button tbBtnAddWeights;
     private final Button tbBtnMaze;
     private final ComboBox tbAlgorithmBox;
+    private final ComboBox tbMazeGenBox;
     
     // Grid
-    private Pane paneGrid;
+    private final Pane paneGrid;
     
     // View-Model
-    private Grid model;
-    private Scene scene;
+    private final Grid model;
+    private final Scene scene;
     
     public View(Grid model)
     {
@@ -76,6 +77,9 @@ public class View implements Observer
         tbBtnClear.setTooltip(new Tooltip("Resets all tiles to empty and no weight"));
         tbBtnAddWeights = new Button("ADD RANDOM WEIGHTS");
         tbBtnAddWeights.setTooltip(new Tooltip("Adds random weights to all tiles"));
+        tbMazeGenBox = new ComboBox(FXCollections.observableArrayList(Grid.MazeGen.values()));
+        tbMazeGenBox.getSelectionModel().selectFirst();
+        tbMazeGenBox.setTooltip(new Tooltip("Maze generation algorithm picker"));
         tbBtnMaze = new Button("GENERATE MAZE");
         tbBtnMaze.setTooltip(new Tooltip("GENERATES A RANDOM MAZE"));
         toolBar.getItems().addAll(tbNodeBox, tbAlgorithmBox, tbBtnAddWeights, tbBtnMaze, tbBtnRun, tbBtnClear);
@@ -115,7 +119,10 @@ public class View implements Observer
         // Generates a random maze
         tbBtnMaze.setOnAction((event) ->
         {
-            controller.doGenerateMaze();
+            FXCollections.observableArrayList(Grid.MazeGen.values()).stream().filter((item) -> (tbMazeGenBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
+            {
+                controller.doGenerateMaze(item);
+            });
         });
         
         tbBtnRun.setOnAction((event) -> 

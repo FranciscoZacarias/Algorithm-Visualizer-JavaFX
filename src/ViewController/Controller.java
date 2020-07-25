@@ -8,7 +8,8 @@ package ViewController;
 import Model.Grid;
 import Model.Tile;
 import PathfindingStrategy.PathfindingStrategy;
-import PathfindingStrategy.StrategyFactory;
+import Factory.StrategyFactory;
+import MazeGenerationStrategy.MazeGenerationStrategy;
 
 /**
  *
@@ -43,9 +44,10 @@ public class Controller
         this.model.addRandomWeights();
     }
     
-    public void doGenerateMaze()
+    public void doGenerateMaze(Grid.MazeGen strategy)
     {
-        this.model.generateRandomMaze();
+        MazeGenerationStrategy mazeGenerationStrategy = StrategyFactory.getMazeGenStrategy(strategy);
+        this.model.generateRandomMaze(mazeGenerationStrategy);
     }
     
     public boolean doShortestPathAlgorithm(Grid.Algorithms strategy) throws InterruptedException

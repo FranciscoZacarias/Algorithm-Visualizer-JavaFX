@@ -5,9 +5,11 @@
  */
 package Model;
 
+import MazeGenerationStrategy.MazeGenerationStrategy;
 import PathfindingStrategy.PathfindingStrategy;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -23,6 +25,10 @@ public class Grid extends Observable implements Observer
 {
     public static enum Algorithms{
         Dijkstra
+    }
+    
+    public static enum MazeGen{
+        Backtracking
     }
     
     // Dimensions
@@ -193,6 +199,24 @@ public class Grid extends Observable implements Observer
     }
     
     /**
+     * Returns height of maze
+     * @return int
+     */
+    public int getYSize()
+    {
+        return this.y_size;
+    }
+    
+    /**
+     * Returns width of maze
+     * @return int
+     */
+    public int getXSize()
+    {
+        return this.x_size;
+    }
+    
+    /**
      * Changes the current click type
      * @param type 
      */
@@ -239,77 +263,11 @@ public class Grid extends Observable implements Observer
     /**
      * TODO: Extract this method into a maze generating strategy
      * Generates a random maze using a recursive backtracker algorithm
+     * @param strategy MazeGenerationStrategy algorithm to generate mazes
      */
-    public void generateRandomMaze()
+    public void generateRandomMaze(MazeGenerationStrategy mazeGenerationStrategy)
     {
-        this.clearGrid();
-        
-        // Set default walls
-        Tile temp;
-        for(int y = 0; y < this.y_size; y++)
-        {
-            for(int x = 0; x < this.x_size; x++)
-            {
-                temp = grid[x][y];
-                if((y % 2 != 0) || (x % 2 != 0)) temp.setAttributes(Tile.Type.WALL, temp.getWeight());
-            }
-        }
-        
-        // This stack backtracks the maze
-        Stack<Tile> stack = new Stack<>();
-        // Keeps track of current tile's neighbors
-        List<Tile> neighbors = new ArrayList<>();
-        // Keeps track of visited Tiles
-        Set<Tile> visited = new HashSet<>();
-        // Keeps track of the path of the maze
-        Set<Tile> path = new HashSet<>();
-        // To pick a random neighbor
-        Random random = new Random();
-        // Keeps track of current Tile
-        Tile currentTile = grid[0][0];
-        
-        stack.push(currentTile);
-        visited.add(currentTile);
-        
-        
-        while(!stack.isEmpty())
-        {
-            // TODO: Cleanup code...
-            // add north, south, east, west tile of lowCostTile
-            temp = this.getNorthTile(currentTile);
-            if(temp != null)
-                neighbors.add((temp.getY() % 2 != 0) ? grid[temp.getX()][temp.getY() - 1] : temp);
-            
-            temp = this.getSouthTile(currentTile);
-            if(temp != null)
-                neighbors.add((temp.getY() % 2 != 0) ? grid[temp.getX()][temp.getY() + 1] : temp);
-            
-            temp = this.getWestTile(currentTile);
-            if(temp != null)
-                neighbors.add((temp.getX() % 2 != 0) ? grid[temp.getX() - 1][temp.getY()] : temp);
-
-            temp = this.getEastTile(currentTile);
-            if(temp != null) 
-                neighbors.add((temp.getX() % 2 != 0) ? grid[temp.getX() + 1][temp.getY()] : temp);
-
-            
-            
-            if(!neighbors.isEmpty())
-            {
-                // Get random neighbor
-                Tile randomNeighb = neighbors.get(random.nextInt(neighbors.size()));
-                
-                //Create path between current and neighbor
-                
-            }
-            else
-            {
-                stack.pop();
-            }
-            
-        }
-        
-        System.out.println(visited);
+        mazeGenerationStrategy.generate(this);
     }
     
     @Override
@@ -319,6 +277,15 @@ public class Grid extends Observable implements Observer
         {
             Tile tile = (Tile)o;
             
+            // User can't override a wall, unless he's setting it as empty first.
+            if(tile.isWall())
+            {
+                if(this.clickType == Tile.Type.EMPTY)
+                    tile.setAttributes(clickType, tile.getDefaultWeight());
+                return;
+            }
+            
+            // What happens when you click a tile with a specific clickType (I.e. root, target, wall...)
             switch(this.clickType)
             {
                 // Tiles that  can only have one ocurrence throughout the grid
