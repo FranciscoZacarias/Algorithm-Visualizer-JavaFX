@@ -16,6 +16,9 @@ import java.util.Observer;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 
 /**
  *
@@ -72,11 +75,26 @@ public class Grid extends Observable implements Observer
      */
     private void drawPath(List<Tile> path) throws InterruptedException
     {
-        for(Tile tile : path)
+        Thread t = new Thread(() ->
         {
-            if (tile == target) continue;
-            tile.setAttributes(Tile.Type.PATH, tile.getWeight());
-        }
+            path.stream().filter((tile) -> !(tile == target)).map((tile) ->
+            {
+                tile.setAttributes(Tile.Type.PATH, tile.getWeight());
+                return tile;
+            }).forEachOrdered((_item) ->
+            {
+                try
+                {
+                    Thread.sleep(50);
+                }
+                catch (InterruptedException ex)
+                {
+                    Logger.getLogger(Grid.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+        }, "PathColor");
+        
+        t.start();
     }
     
     /**
