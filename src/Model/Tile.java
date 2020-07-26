@@ -32,7 +32,8 @@ public class Tile extends Observable
         WALL,
         EMPTY,
         VISITED,
-        PATH
+        PATH,
+        HIGHLIGHT
     }
     
     Map<Type, Color> typeMap;
@@ -52,6 +53,7 @@ public class Tile extends Observable
     private final int defaultWeight = 1;
     private int weight;
     private Type type;
+    private double tileGap = 1;
     
     public Tile(int x, int y, int size)
     {
@@ -65,6 +67,7 @@ public class Tile extends Observable
         typeMap.put(Type.EMPTY, Color.WHITE);
         typeMap.put(Type.WALL, Color.BLACK);
         typeMap.put(Type.PATH, Color.DARKGOLDENROD);
+        typeMap.put(Type.HIGHLIGHT, Color.GREENYELLOW);
         
         // Weight color 
         weightMap = new HashMap<>();
@@ -83,7 +86,7 @@ public class Tile extends Observable
         this.type = Type.EMPTY;
         
         // Tile content
-        this.rectangle = new Rectangle(size - 2, size - 2);
+        this.rectangle = new Rectangle(size - tileGap, size - tileGap);
         this.rectangle.setFill(Color.WHITE);
         rectangle.setStroke(Color.LIGHTGRAY);
         

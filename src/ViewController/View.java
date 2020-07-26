@@ -11,15 +11,21 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 /**
  *
@@ -28,63 +34,107 @@ import javafx.scene.layout.VBox;
 public class View implements Observer
 {
     // Window dimensions
-    private final int WIDTH = 960;
-    private final int GRID_WIDTH = 960;
-    private final int HEIGHT = 675;
+    private final int WIDTH = 1280;
+    private final int HEIGHT = 720;
     
     // Tile Dimensions
     // Tile amount must be odd numbers! 
     private final int X_TILES = 49;//49;
     private final int Y_TILES = 33; //33;
-    private final int TILE_SIZE = 19; //20
+    private final int TILE_SIZE = 20; //20
     
     // JavaFX Scene Nodes
-    private final ToolBar toolBar;
     private final ComboBox tbNodeBox;
     private final Button tbBtnRun;
     private final Button tbBtnClear;
+    private final Button tbBtnExit;
     private final Button tbBtnAddWeights;
     private final Button tbBtnMaze;
     private final ComboBox tbAlgorithmBox;
     private final ComboBox tbMazeGenBox;
     
     // Grid
+    private final VBox leftPane;
     private final Pane paneGrid;
     
     // View-Model
     private final Grid model;
     private final Scene scene;
     
+    // Attributes
+    private final double leftPanelSize = 0.20;
+    private final Font defaultFont = Font.font("Verdana", 14);
+    private final String defaultHboxStyle = "-fx-padding: 10;" 
+        + "-fx-border-style: solid inside;"
+        + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+        + "-fx-border-radius: 4;" + "-fx-border-color: lightgray;";
+    
     public View(Grid model)
     {
         this.model = model;
         this.paneGrid = new Pane();
         
+        // Region: LeftPane
+        this.leftPane = new VBox();
+        this.leftPane.setPadding(new Insets(5, 5, 5, 5));
+        this.leftPane.setSpacing(10);
         
-        // Region: ToolBar        
-        toolBar = new ToolBar();
+        HBox hboxCreateGrid = new HBox(5);
+        /** TODO: add x and y tile amount, tile size and create grid button */
+        hboxCreateGrid.getChildren().addAll();
+        
+        HBox hboxNodeBox = new HBox(5);
+        hboxNodeBox.setAlignment(Pos.CENTER);
+        hboxNodeBox.setStyle(defaultHboxStyle);
+        Text txtNodeBox = new Text("Tile Picker: ");
+        txtNodeBox.setFont(defaultFont);
         tbNodeBox = new ComboBox(FXCollections.observableArrayList(Tile.Type.values()));
         tbNodeBox.getItems().remove(Tile.Type.VISITED);
         tbNodeBox.getItems().remove(Tile.Type.PATH);
+        tbNodeBox.getItems().remove(Tile.Type.HIGHLIGHT);
         tbNodeBox.getSelectionModel().selectFirst();
         tbNodeBox.setTooltip(new Tooltip("Tile Type picker"));
+        hboxNodeBox.getChildren().addAll(txtNodeBox, tbNodeBox);
+        
+        HBox hboxAlgorithmBox = new HBox(5);
+        hboxAlgorithmBox.setAlignment(Pos.CENTER);
+        hboxAlgorithmBox.setStyle(defaultHboxStyle);
         tbAlgorithmBox = new ComboBox(FXCollections.observableArrayList(Grid.Algorithms.values()));
         tbAlgorithmBox.getSelectionModel().selectFirst();
         tbAlgorithmBox.setTooltip(new Tooltip("Algorithm picker"));
         tbBtnRun = new Button("RUN");
         tbBtnRun.setTooltip(new Tooltip("Run Pathfinding Algorithm"));
-        tbBtnClear = new Button("CLEAR");
-        tbBtnClear.setTooltip(new Tooltip("Resets all tiles to empty and no weight"));
+        hboxAlgorithmBox.getChildren().addAll(tbAlgorithmBox, tbBtnRun);
+        
+        HBox hboxAddWeights = new HBox(5);
+        hboxAddWeights.setAlignment(Pos.CENTER);
+        hboxAddWeights.setStyle(defaultHboxStyle);
         tbBtnAddWeights = new Button("ADD RANDOM WEIGHTS");
         tbBtnAddWeights.setTooltip(new Tooltip("Adds random weights to all tiles"));
+        hboxAddWeights.getChildren().add(tbBtnAddWeights);
+        
+        HBox hboxMazeGen = new HBox(5);
+        hboxMazeGen.setAlignment(Pos.CENTER);
+        hboxMazeGen.setStyle(defaultHboxStyle);
         tbMazeGenBox = new ComboBox(FXCollections.observableArrayList(Grid.MazeGen.values()));
         tbMazeGenBox.getSelectionModel().selectFirst();
         tbMazeGenBox.setTooltip(new Tooltip("Maze generation algorithm picker"));
-        tbBtnMaze = new Button("GENERATE MAZE");
+        tbBtnMaze = new Button("MAZE GEN");
         tbBtnMaze.setTooltip(new Tooltip("GENERATES A RANDOM MAZE"));
-        toolBar.getItems().addAll(tbNodeBox, tbAlgorithmBox, tbBtnAddWeights, tbBtnMaze, tbBtnRun, tbBtnClear);
-        // EndRegion: ToolBar
+        hboxMazeGen.getChildren().addAll(tbMazeGenBox, tbBtnMaze);
         
+        HBox hboxUtilBtns = new HBox(5);
+        hboxUtilBtns.setAlignment(Pos.CENTER);
+        hboxUtilBtns.setStyle(defaultHboxStyle);
+        tbBtnClear = new Button("CLEAR");
+        tbBtnClear.setTooltip(new Tooltip("Resets all tiles to empty and no weight"));
+        tbBtnExit = new Button("EXIT");
+        tbBtnExit.setTooltip(new Tooltip("Exits the application"));
+        hboxUtilBtns.getChildren().addAll(tbBtnClear, tbBtnExit);
+        
+        leftPane.getChildren().addAll(hboxCreateGrid, hboxNodeBox, hboxAlgorithmBox, hboxAddWeights, hboxMazeGen, hboxUtilBtns);
+        // EndRegion: RightPane
+
         // Initializes the grid
         model.gridInit(X_TILES, Y_TILES, TILE_SIZE);
         
@@ -108,6 +158,12 @@ public class View implements Observer
         {
             this.enableButtons();
             controller.doClearGrid();
+        });
+        
+        // Exits the application
+        tbBtnExit.setOnAction((event) -> 
+        {
+            Platform.exit();
         });
         
         // Adds random weights to all Tiles
@@ -157,7 +213,7 @@ public class View implements Observer
      */
     private void lockButtons()
     {
-        for(Node node : this.toolBar.getItems())
+        for(Node node : this.leftPane.getChildren())
         {
             if(node instanceof Button)
             {
@@ -173,7 +229,7 @@ public class View implements Observer
      */
     private void enableButtons()
     {
-        for(Node node : this.toolBar.getItems())
+        for(Node node : this.leftPane.getChildren())
         {
             if(node instanceof Button)
             {
@@ -188,15 +244,20 @@ public class View implements Observer
      * Initializes the components of the view. Meant to be called once in constructor
      * @return Pane with components initialized
      */
-    private Pane initComponents()
+    private SplitPane initComponents()
     {
         VBox root = new VBox();
         
-        root.getChildren().add(this.toolBar);
         fillGrid(model.getGrid());
         root.getChildren().add(this.paneGrid);
         
-        return root;
+        SplitPane splitPane = new SplitPane();
+        splitPane.getItems().addAll(this.leftPane, root);
+        
+        this.leftPane.maxWidthProperty().bind(splitPane.widthProperty().multiply(this.leftPanelSize));
+        this.leftPane.minWidthProperty().bind(splitPane.widthProperty().multiply(this.leftPanelSize));
+        
+        return splitPane;
     }
     
     /**

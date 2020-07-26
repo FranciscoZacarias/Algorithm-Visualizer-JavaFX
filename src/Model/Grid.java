@@ -75,23 +75,26 @@ public class Grid extends Observable implements Observer
      */
     private void drawPath(List<Tile> path) throws InterruptedException
     {
-        Thread t = new Thread(() ->
+        Thread t = new Thread(new Runnable()
         {
-            path.stream().filter((tile) -> !(tile == target)).map((tile) ->
+            @Override
+            public void run()
             {
-                tile.setAttributes(Tile.Type.PATH, tile.getWeight());
-                return tile;
-            }).forEachOrdered((_item) ->
-            {
-                try
+                for(Tile tile : path)
                 {
-                    Thread.sleep(50);
+                    if (tile == target) continue;
+                    tile.setAttributes(Tile.Type.PATH, tile.getWeight());
+                    
+                    try
+                    {
+                        Thread.sleep(10);
+                    } 
+                    catch (InterruptedException ex)
+                    {
+                        Logger.getLogger(Grid.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-                catch (InterruptedException ex)
-                {
-                    Logger.getLogger(Grid.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            });
+            }
         }, "PathColor");
         
         t.start();
@@ -281,7 +284,7 @@ public class Grid extends Observable implements Observer
     /**
      * TODO: Extract this method into a maze generating strategy
      * Generates a random maze using a recursive backtracker algorithm
-     * @param strategy MazeGenerationStrategy algorithm to generate mazes
+     * @param mazeGenerationStrategy maze generation algorithm
      */
     public void generateRandomMaze(MazeGenerationStrategy mazeGenerationStrategy)
     {
