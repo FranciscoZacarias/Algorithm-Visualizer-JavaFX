@@ -65,6 +65,7 @@ public class View implements Observer
     // Attributes
     private final String defaultXSize = "51";
     private final String defaultYSize = "35";
+    private final String defaultTileSize = "20";
     private final double leftPanelSize = 0.20;
     private final Font defaultFont = Font.font("Courier New", 14);
     private final String defaultHboxStyle = "-fx-padding: 10;" 
@@ -96,7 +97,7 @@ public class View implements Observer
         txtYTiles = new TextField(defaultYSize);
         createPane.add(txtYTiles, 3, 0);
         createPane.add(new Text("Size: "), 4, 0);
-        txtTileSize = new TextField("20"); 
+        txtTileSize = new TextField(defaultTileSize); 
         createPane.add(txtTileSize, 5, 0);
         HBox hboxCreateBtn = new HBox(5);
         hboxCreateBtn.setAlignment(Pos.CENTER);
@@ -125,9 +126,7 @@ public class View implements Observer
         tbAlgorithmBox = new ComboBox(FXCollections.observableArrayList(Grid.Algorithms.values()));
         tbAlgorithmBox.getSelectionModel().selectFirst();
         tbAlgorithmBox.setTooltip(new Tooltip("Algorithm picker"));
-        tbBtnRun = new Button("RUN");
-        tbBtnRun.setTooltip(new Tooltip("Run Pathfinding Algorithm"));
-        hboxAlgorithmBox.getChildren().addAll(tbAlgorithmBox, tbBtnRun);
+        hboxAlgorithmBox.getChildren().addAll(tbAlgorithmBox);
         
         // Add Weights Pane
         HBox hboxAddWeights = new HBox(5);
@@ -156,7 +155,9 @@ public class View implements Observer
         tbBtnClear.setTooltip(new Tooltip("Resets all tiles to empty and no weight"));
         tbBtnExit = new Button("EXIT");
         tbBtnExit.setTooltip(new Tooltip("Exits the application"));
-        hboxUtilBtns.getChildren().addAll(tbBtnClear, tbBtnExit);
+        tbBtnRun = new Button("RUN");
+        tbBtnRun.setTooltip(new Tooltip("Run Pathfinding Algorithm"));
+        hboxUtilBtns.getChildren().addAll(tbBtnRun, tbBtnClear, tbBtnExit);
         
         leftPane.getChildren().addAll(vboxCreateGrid, hboxNodeBox, hboxAlgorithmBox, hboxAddWeights, hboxMazeGen, hboxUtilBtns);
         // EndRegion: RightPane
@@ -181,7 +182,6 @@ public class View implements Observer
         // Clear button clears the grid
         tbBtnClear.setOnAction((event) ->
         {
-            this.enableButtons();
             controller.doClearGrid();
         });
         
@@ -230,7 +230,6 @@ public class View implements Observer
                 try
                 {
                     boolean success = controller.doShortestPathAlgorithm(item);
-                    if(success) lockButtons();
                 } 
                 catch (InterruptedException ex)
                 {
@@ -247,39 +246,6 @@ public class View implements Observer
     public Scene getScene()
     {
         return this.scene;
-    }
-    
-    /**
-     * Disables all buttons in toolBar, except CLEAR button,
-     * which is the only way to enable them back
-     */
-    private void lockButtons()
-    {
-        for(Node node : this.leftPane.getChildren())
-        {
-            if(node instanceof Button)
-            {
-                Button btn = (Button)node;
-                if(btn == tbBtnClear) continue;
-                btn.setDisable(true);
-            }
-        }
-    }
-    
-    /**
-     * Enables all buttons in the tool bar
-     */ 
-    private void enableButtons()
-    {
-        for(Node node : this.leftPane.getChildren())
-        {
-            if(node instanceof Button)
-            {
-                Button btn = (Button)node;
-                if(btn == tbBtnClear) continue;
-                btn.setDisable(false);
-            }
-        }
     }
     
     private void addTextFieldListeners()

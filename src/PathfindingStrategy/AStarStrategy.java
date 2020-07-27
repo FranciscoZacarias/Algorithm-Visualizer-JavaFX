@@ -140,7 +140,7 @@ public class AStarStrategy extends PathfindingStrategy
     }
     
     /**
-     * Estimates the cost of the cheapest path from a to the goal.
+     * This is a very basic heuristic based on the physical length between tiles (not accounting for weight, as it is only accounted for while calculating the goals)
      * @param a Tile a
      * @param b Tile b
      * @return double heuristic value

@@ -63,11 +63,11 @@ public class Tile extends Observable
         typeMap = new HashMap<>();
         typeMap.put(Type.ROOT, Color.YELLOW);
         typeMap.put(Type.TARGET, Color.PURPLE);
-        typeMap.put(Type.VISITED, Color.RED);
+        typeMap.put(Type.VISITED, Color.LIGHTGREEN);
         typeMap.put(Type.EMPTY, Color.WHITE);
         typeMap.put(Type.WALL, Color.BLACK);
-        typeMap.put(Type.PATH, Color.DARKGOLDENROD);
-        typeMap.put(Type.HIGHLIGHT, Color.GREENYELLOW);
+        typeMap.put(Type.PATH, Color.GREEN);
+        typeMap.put(Type.HIGHLIGHT, Color.YELLOW);
         
         // Weight color 
         weightMap = new HashMap<>();

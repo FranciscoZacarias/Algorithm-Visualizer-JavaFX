@@ -82,7 +82,7 @@ public class Grid extends Observable implements Observer
             {
                 try
                 {
-                    Thread.sleep(10);
+                    Thread.sleep(25);
                 }
                 catch (InterruptedException ex)
                 {

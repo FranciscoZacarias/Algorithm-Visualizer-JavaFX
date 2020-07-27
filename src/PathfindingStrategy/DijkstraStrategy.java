@@ -7,7 +7,6 @@ package PathfindingStrategy;
 
 import Model.Grid;
 import Model.Tile;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,10 +42,19 @@ public class DijkstraStrategy extends PathfindingStrategy
             tile = parents.get(tile);
         } while (tile != root);
         
+        
         System.out.println("Dijkstra -> COST: " + cost);
+        this.drawPath(path, target, root);
+        
         return cost;
     }
     
+    /**
+     * Executes Dijkstra's algorithm on the 'grid'
+     * @param grid Model with grid consisting of Tile[][]
+     * @param parents empty map to store parents of tiles, to allow path reconstruction
+     * @param weights empty map to keep track of weights
+     */
     private void executeDijkstra(Grid grid,
                     HashMap<Tile, Tile> parents,
                     HashMap<Tile, Integer> weights)
@@ -93,10 +101,17 @@ public class DijkstraStrategy extends PathfindingStrategy
         }
     }
     
+    /**
+     * Return the min weight Tile in  the unvisited set
+     * @param unvisited
+     * @param weights
+     * @return 
+     */
     private Tile getMinWeight(Set<Tile> unvisited, HashMap<Tile, Integer> weights)
     {
         double minWeight = Integer.MAX_VALUE;
         Tile minWeightTile = null;
+        
         for(Tile tile : unvisited)
         {
             if(weights.get(tile) <= minWeight)
@@ -105,6 +120,7 @@ public class DijkstraStrategy extends PathfindingStrategy
                 minWeight = weights.get(tile);
             }
         }
+        
         return minWeightTile;
     }
 }
