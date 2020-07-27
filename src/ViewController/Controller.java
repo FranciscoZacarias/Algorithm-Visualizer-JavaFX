@@ -53,6 +53,6 @@ public class Controller
     public boolean doShortestPathAlgorithm(Grid.Algorithms strategy) throws InterruptedException
     {
         PathfindingStrategy pathfindingStrategy = StrategyFactory.getPathfindingStrategy(strategy);
-        return this.model.findShortestPath(pathfindingStrategy);
+        return this.model.executePathfinding(pathfindingStrategy);
     }
 }

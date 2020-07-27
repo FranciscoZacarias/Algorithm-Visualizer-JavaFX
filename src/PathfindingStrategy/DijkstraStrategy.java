@@ -20,6 +20,7 @@ public class DijkstraStrategy extends PathfindingStrategy
 {
     public DijkstraStrategy()
     {
+        super();
     }
 
     @Override
@@ -42,6 +43,7 @@ public class DijkstraStrategy extends PathfindingStrategy
             tile = parents.get(tile);
         } while (tile != root);
         
+        System.out.println("Dijkstra -> COST: " + cost);
         return cost;
     }
     
@@ -53,13 +55,18 @@ public class DijkstraStrategy extends PathfindingStrategy
         
         // Init all tiles
         Set<Tile> unvisited = new HashSet();
-        for (Tile tile : grid.getTiles())
+        grid.getTiles().stream().filter((tile) -> !(tile.isWall())).map((tile) ->
         {
-            if(tile.isWall()) continue;
             unvisited.add(tile);
+            return tile;
+        }).map((tile) ->
+        {
             weights.put(tile, Integer.MAX_VALUE);
+            return tile;
+        }).forEachOrdered((tile) ->
+        {
             parents.put(tile, null);
-        }
+        });
         weights.put(root, 0);
         
         // Compute weights
@@ -68,18 +75,8 @@ public class DijkstraStrategy extends PathfindingStrategy
             Tile lowCostTile = getMinWeight(unvisited, weights);
             unvisited.remove(lowCostTile);
             
-            List<Tile> neighbors = new ArrayList<>();
-            Tile temp;
-            
-            // add north, south, east, west tile of lowCostTile to neighbors, if they exist
-            temp = grid.getNorthTile(lowCostTile);
-            if(temp != null) neighbors.add(temp);
-            temp = grid.getSouthTile(lowCostTile);
-            if(temp != null) neighbors.add(temp);
-            temp = grid.getEastTile(lowCostTile);
-            if(temp != null) neighbors.add(temp);
-            temp = grid.getWestTile(lowCostTile);
-            if(temp != null) neighbors.add(temp);
+            // Get neighbors
+            List<Tile> neighbors = grid.getTileNeighbors(lowCostTile);
             
             for(Tile tile : neighbors)
             {

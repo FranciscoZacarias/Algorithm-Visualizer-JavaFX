@@ -23,7 +23,7 @@ public abstract class PathfindingStrategy
      * Signature for a pathfinding algorithm
      * @param model [in] 
      * @param path [out] output parameter with the resulting shortest path
-     * @return 
+     * @return int cost of the found path
      */
     public abstract int algorithm(Grid model, List<Tile> path);
 }

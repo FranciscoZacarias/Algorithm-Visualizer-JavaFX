@@ -8,6 +8,7 @@ package Factory;
 import MazeGenerationStrategy.BacktrackingStrategy;
 import MazeGenerationStrategy.MazeGenerationStrategy;
 import Model.Grid;
+import PathfindingStrategy.AStarStrategy;
 import PathfindingStrategy.DijkstraStrategy;
 import PathfindingStrategy.PathfindingStrategy;
 
@@ -24,6 +25,10 @@ public class StrategyFactory
         {
             case Dijkstra:
                 return new DijkstraStrategy();
+            case AStar:
+                return new AStarStrategy(false);
+            case AStarOptimal:
+                return new AStarStrategy(true);
             default:
                 throw new IllegalArgumentException("Pathfinding algorithm not found!");
         }

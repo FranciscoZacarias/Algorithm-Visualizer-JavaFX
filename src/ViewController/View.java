@@ -20,7 +20,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -34,36 +36,37 @@ import javafx.scene.text.Text;
 public class View implements Observer
 {
     // Window dimensions
-    private final int WIDTH = 1280;
-    private final int HEIGHT = 720;
-    
-    // Tile Dimensions
-    // Tile amount must be odd numbers! 
-    private final int X_TILES = 49;//49;
-    private final int Y_TILES = 33; //33;
-    private final int TILE_SIZE = 20; //20
+    private final int WIDTH = 1285;
+    private final int HEIGHT = 702;
     
     // JavaFX Scene Nodes
-    private final ComboBox tbNodeBox;
+    private final TextField txtXTiles;
+    private final TextField txtYTiles;
+    private final TextField txtTileSize;
     private final Button tbBtnRun;
     private final Button tbBtnClear;
     private final Button tbBtnExit;
     private final Button tbBtnAddWeights;
     private final Button tbBtnMaze;
+    private final Button btnCreateGrid;
     private final ComboBox tbAlgorithmBox;
     private final ComboBox tbMazeGenBox;
+    private final ComboBox tbNodeBox;
     
     // Grid
     private final VBox leftPane;
-    private final Pane paneGrid;
+    private final Pane parentGridPane;
+    private Pane gridPane;
     
     // View-Model
     private final Grid model;
     private final Scene scene;
     
     // Attributes
+    private final String defaultXSize = "51";
+    private final String defaultYSize = "35";
     private final double leftPanelSize = 0.20;
-    private final Font defaultFont = Font.font("Verdana", 14);
+    private final Font defaultFont = Font.font("Courier New", 14);
     private final String defaultHboxStyle = "-fx-padding: 10;" 
         + "-fx-border-style: solid inside;"
         + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
@@ -72,17 +75,36 @@ public class View implements Observer
     public View(Grid model)
     {
         this.model = model;
-        this.paneGrid = new Pane();
+        this.parentGridPane = new Pane();
+        this.gridPane = null;
         
         // Region: LeftPane
         this.leftPane = new VBox();
         this.leftPane.setPadding(new Insets(5, 5, 5, 5));
         this.leftPane.setSpacing(10);
         
-        HBox hboxCreateGrid = new HBox(5);
-        /** TODO: add x and y tile amount, tile size and create grid button */
-        hboxCreateGrid.getChildren().addAll();
+        // Create Grid Pane
+        VBox vboxCreateGrid = new VBox(5);
+        vboxCreateGrid.setStyle(defaultHboxStyle);
+        GridPane createPane = new GridPane();
+        createPane.setHgap(5);
+        createPane.setPadding(new Insets(5, 5, 5, 5));
+        createPane.add(new Text("X: "), 0, 0);
+        txtXTiles = new TextField(defaultXSize);
+        createPane.add(txtXTiles, 1, 0);
+        createPane.add(new Text("Y: "), 2, 0);
+        txtYTiles = new TextField(defaultYSize);
+        createPane.add(txtYTiles, 3, 0);
+        createPane.add(new Text("Size: "), 4, 0);
+        txtTileSize = new TextField("20"); 
+        createPane.add(txtTileSize, 5, 0);
+        HBox hboxCreateBtn = new HBox(5);
+        hboxCreateBtn.setAlignment(Pos.CENTER);
+        btnCreateGrid = new Button("CREATE NEW GRID");
+        hboxCreateBtn.getChildren().add(btnCreateGrid);
+        vboxCreateGrid.getChildren().addAll(createPane, hboxCreateBtn);
         
+        //Tile Picker Pane
         HBox hboxNodeBox = new HBox(5);
         hboxNodeBox.setAlignment(Pos.CENTER);
         hboxNodeBox.setStyle(defaultHboxStyle);
@@ -96,6 +118,7 @@ public class View implements Observer
         tbNodeBox.setTooltip(new Tooltip("Tile Type picker"));
         hboxNodeBox.getChildren().addAll(txtNodeBox, tbNodeBox);
         
+        // Pathfinding Pane
         HBox hboxAlgorithmBox = new HBox(5);
         hboxAlgorithmBox.setAlignment(Pos.CENTER);
         hboxAlgorithmBox.setStyle(defaultHboxStyle);
@@ -106,6 +129,7 @@ public class View implements Observer
         tbBtnRun.setTooltip(new Tooltip("Run Pathfinding Algorithm"));
         hboxAlgorithmBox.getChildren().addAll(tbAlgorithmBox, tbBtnRun);
         
+        // Add Weights Pane
         HBox hboxAddWeights = new HBox(5);
         hboxAddWeights.setAlignment(Pos.CENTER);
         hboxAddWeights.setStyle(defaultHboxStyle);
@@ -113,6 +137,7 @@ public class View implements Observer
         tbBtnAddWeights.setTooltip(new Tooltip("Adds random weights to all tiles"));
         hboxAddWeights.getChildren().add(tbBtnAddWeights);
         
+        // Maze Generation Pane
         HBox hboxMazeGen = new HBox(5);
         hboxMazeGen.setAlignment(Pos.CENTER);
         hboxMazeGen.setStyle(defaultHboxStyle);
@@ -123,6 +148,7 @@ public class View implements Observer
         tbBtnMaze.setTooltip(new Tooltip("GENERATES A RANDOM MAZE"));
         hboxMazeGen.getChildren().addAll(tbMazeGenBox, tbBtnMaze);
         
+        // Util buttons Pane
         HBox hboxUtilBtns = new HBox(5);
         hboxUtilBtns.setAlignment(Pos.CENTER);
         hboxUtilBtns.setStyle(defaultHboxStyle);
@@ -132,11 +158,10 @@ public class View implements Observer
         tbBtnExit.setTooltip(new Tooltip("Exits the application"));
         hboxUtilBtns.getChildren().addAll(tbBtnClear, tbBtnExit);
         
-        leftPane.getChildren().addAll(hboxCreateGrid, hboxNodeBox, hboxAlgorithmBox, hboxAddWeights, hboxMazeGen, hboxUtilBtns);
+        leftPane.getChildren().addAll(vboxCreateGrid, hboxNodeBox, hboxAlgorithmBox, hboxAddWeights, hboxMazeGen, hboxUtilBtns);
         // EndRegion: RightPane
-
-        // Initializes the grid
-        model.gridInit(X_TILES, Y_TILES, TILE_SIZE);
+        
+        this.addTextFieldListeners();
         
         //  Create scene
         this.scene = new Scene(initComponents(), WIDTH, HEIGHT);
@@ -177,10 +202,27 @@ public class View implements Observer
         {
             FXCollections.observableArrayList(Grid.MazeGen.values()).stream().filter((item) -> (tbMazeGenBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
             {
-                controller.doGenerateMaze(item);
+                if(gridPane != null)
+                    controller.doGenerateMaze(item);
             });
         });
         
+        // Initialized the grid
+        btnCreateGrid.setOnAction((event) ->
+        {
+            int x = Integer.valueOf(txtXTiles.getText());
+            int y = Integer.valueOf(txtYTiles.getText());
+            int size = Integer.valueOf(txtTileSize.getText());
+            
+            if(parentGridPane.getChildren().contains(gridPane))
+                parentGridPane.getChildren().remove(gridPane);
+            
+            // Initializes the grid
+            model.gridInit(x, y, size);
+            this.fillGrid(model.getGrid());
+        });
+        
+        // Run pathfinding algorithms
         tbBtnRun.setOnAction((event) -> 
         {
             FXCollections.observableArrayList(Grid.Algorithms.values()).stream().filter((item) -> (tbAlgorithmBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
@@ -226,7 +268,7 @@ public class View implements Observer
     
     /**
      * Enables all buttons in the tool bar
-     */
+     */ 
     private void enableButtons()
     {
         for(Node node : this.leftPane.getChildren())
@@ -240,6 +282,11 @@ public class View implements Observer
         }
     }
     
+    private void addTextFieldListeners()
+    {
+        
+    }
+    
     /**
      * Initializes the components of the view. Meant to be called once in constructor
      * @return Pane with components initialized
@@ -248,8 +295,8 @@ public class View implements Observer
     {
         VBox root = new VBox();
         
-        fillGrid(model.getGrid());
-        root.getChildren().add(this.paneGrid);
+        //fillGrid(model.getGrid());
+        root.getChildren().add(this.parentGridPane);
         
         SplitPane splitPane = new SplitPane();
         splitPane.getItems().addAll(this.leftPane, root);
@@ -266,13 +313,15 @@ public class View implements Observer
      */
     private void fillGrid(Tile[][] tiles)
     {
+        this.gridPane = new Pane();
         for(Tile[] row : tiles)
         {
             for(Tile tile: row)
             {
-                paneGrid.getChildren().add(tile.getStackPane());
+                gridPane.getChildren().add(tile.getStackPane());
             }
         }
+        this.parentGridPane.getChildren().add(gridPane);
     }
 
     /**

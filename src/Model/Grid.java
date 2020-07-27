@@ -8,17 +8,11 @@ package Model;
 import MazeGenerationStrategy.MazeGenerationStrategy;
 import PathfindingStrategy.PathfindingStrategy;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Random;
-import java.util.Set;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 
 /**
  *
@@ -27,7 +21,9 @@ import javafx.application.Platform;
 public class Grid extends Observable implements Observer
 {
     public static enum Algorithms{
-        Dijkstra
+        Dijkstra,
+        AStar,
+        AStarOptimal
     }
     
     public static enum MazeGen{
@@ -58,14 +54,15 @@ public class Grid extends Observable implements Observer
      * @return 
      * @throws java.lang.InterruptedException 
      */
-    public boolean findShortestPath(PathfindingStrategy pathfindingStrategy) throws InterruptedException
+    public boolean executePathfinding(PathfindingStrategy pathfindingStrategy) throws InterruptedException
     {
         if(root == null || target == null) return false;
         
-        List<Tile> shortestPath = new ArrayList<>();
-        int cost = pathfindingStrategy.algorithm(this, shortestPath);
+        List<Tile> path = new ArrayList<>();
         
-        this.drawPath(shortestPath);
+        int cost = pathfindingStrategy.algorithm(this, path);
+        
+        this.drawPath(path);
         
         return true;
     }
@@ -75,26 +72,23 @@ public class Grid extends Observable implements Observer
      */
     private void drawPath(List<Tile> path) throws InterruptedException
     {
-        Thread t = new Thread(new Runnable()
+        Thread t = new Thread(() ->
         {
-            @Override
-            public void run()
+            path.stream().filter((tile) -> !(tile == target || tile == root)).map((tile) ->
             {
-                for(Tile tile : path)
+                tile.setAttributes(Tile.Type.PATH, tile.getWeight());
+                return tile;                
+            }).forEachOrdered((_item) ->
+            {
+                try
                 {
-                    if (tile == target) continue;
-                    tile.setAttributes(Tile.Type.PATH, tile.getWeight());
-                    
-                    try
-                    {
-                        Thread.sleep(10);
-                    } 
-                    catch (InterruptedException ex)
-                    {
-                        Logger.getLogger(Grid.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    Thread.sleep(10);
                 }
-            }
+                catch (InterruptedException ex)
+                {
+                    Logger.getLogger(Grid.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
         }, "PathColor");
         
         t.start();
@@ -177,6 +171,18 @@ public class Grid extends Observable implements Observer
                 grid[x][y].clearTile();
             }
         }
+    }
+    
+    public List<Tile> getTileNeighbors(Tile tile)
+    {
+        List<Tile> neighbors = new ArrayList<>();
+        
+        neighbors.add(this.getNorthTile(tile));
+        neighbors.add(this.getSouthTile(tile));
+        neighbors.add(this.getEastTile(tile));
+        neighbors.add(this.getWestTile(tile));
+        
+        return neighbors;
     }
     
     /**
