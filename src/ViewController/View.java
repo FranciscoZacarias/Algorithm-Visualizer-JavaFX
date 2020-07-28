@@ -11,11 +11,9 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -47,6 +45,7 @@ public class View implements Observer
     private final Button tbBtnClear;
     private final Button tbBtnExit;
     private final Button tbBtnAddWeights;
+    private final Button tbBtnAddWalls;
     private final Button tbBtnMaze;
     private final Button btnCreateGrid;
     private final ComboBox tbAlgorithmBox;
@@ -83,7 +82,7 @@ public class View implements Observer
         this.leftPane = new VBox();
         this.leftPane.setPadding(new Insets(5, 5, 5, 5));
         this.leftPane.setSpacing(10);
-        
+                
         // Create Grid Pane
         VBox vboxCreateGrid = new VBox(5);
         vboxCreateGrid.setStyle(defaultHboxStyle);
@@ -102,6 +101,7 @@ public class View implements Observer
         HBox hboxCreateBtn = new HBox(5);
         hboxCreateBtn.setAlignment(Pos.CENTER);
         btnCreateGrid = new Button("CREATE NEW GRID");
+        btnCreateGrid.setTooltip(new Tooltip("Overrides previous grid"));
         hboxCreateBtn.getChildren().add(btnCreateGrid);
         vboxCreateGrid.getChildren().addAll(createPane, hboxCreateBtn);
         
@@ -115,6 +115,10 @@ public class View implements Observer
         tbNodeBox.getItems().remove(Tile.Type.VISITED);
         tbNodeBox.getItems().remove(Tile.Type.PATH);
         tbNodeBox.getItems().remove(Tile.Type.HIGHLIGHT);
+        tbNodeBox.getItems().remove(Tile.Type.VISITED_DENSE);
+        tbNodeBox.getItems().remove(Tile.Type.VISITED_LIGHT);
+        tbNodeBox.getItems().remove(Tile.Type.VISITED_MAX);
+        tbNodeBox.getItems().remove(Tile.Type.VISITED_MEDIUM);
         tbNodeBox.getSelectionModel().selectFirst();
         tbNodeBox.setTooltip(new Tooltip("Tile Type picker"));
         hboxNodeBox.getChildren().addAll(txtNodeBox, tbNodeBox);
@@ -128,13 +132,15 @@ public class View implements Observer
         tbAlgorithmBox.setTooltip(new Tooltip("Algorithm picker"));
         hboxAlgorithmBox.getChildren().addAll(tbAlgorithmBox);
         
-        // Add Weights Pane
+        // Add Weights & Walls Pane
         HBox hboxAddWeights = new HBox(5);
         hboxAddWeights.setAlignment(Pos.CENTER);
         hboxAddWeights.setStyle(defaultHboxStyle);
-        tbBtnAddWeights = new Button("ADD RANDOM WEIGHTS");
+        tbBtnAddWeights = new Button("ADD WEIGHTS");
         tbBtnAddWeights.setTooltip(new Tooltip("Adds random weights to all tiles"));
-        hboxAddWeights.getChildren().add(tbBtnAddWeights);
+        tbBtnAddWalls = new Button("ADD WALLS");
+        tbBtnAddWalls.setTooltip(new Tooltip("Adds random walls to the grid"));
+        hboxAddWeights.getChildren().addAll(tbBtnAddWalls, tbBtnAddWeights);
         
         // Maze Generation Pane
         HBox hboxMazeGen = new HBox(5);
@@ -162,8 +168,6 @@ public class View implements Observer
         leftPane.getChildren().addAll(vboxCreateGrid, hboxNodeBox, hboxAlgorithmBox, hboxAddWeights, hboxMazeGen, hboxUtilBtns);
         // EndRegion: RightPane
         
-        this.addTextFieldListeners();
-        
         //  Create scene
         this.scene = new Scene(initComponents(), WIDTH, HEIGHT);
     }
@@ -188,13 +192,18 @@ public class View implements Observer
         // Exits the application
         tbBtnExit.setOnAction((event) -> 
         {
-            Platform.exit();
+            System.exit(0);
         });
         
         // Adds random weights to all Tiles
         tbBtnAddWeights.setOnAction((event) -> 
         {
             controller.doAddRandomWeights();
+        });
+        
+        tbBtnAddWalls.setOnAction((event) -> 
+        {
+            controller.doAddRandomWalls();
         });
         
         // Generates a random maze
@@ -248,9 +257,14 @@ public class View implements Observer
         return this.scene;
     }
     
-    private void addTextFieldListeners()
+    /**
+     * Creates a new grid 
+     * This method was created to be called in controller constructor,
+     * so we don't have to manually create a new grid on load
+     */
+    public void createGrid()
     {
-        
+        btnCreateGrid.fire();
     }
     
     /**

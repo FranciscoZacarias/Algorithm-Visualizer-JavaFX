@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public final class Painter
 {
     private static final Painter INSTANCE = new Painter();
-    private Executor executor;
+    private final Executor executor;
     
     private Painter()
     {
@@ -36,15 +36,14 @@ public final class Painter
     /**
      * Draws a path from root to target, given a list of tiles
      * @param path
-     * @param target
-     * @param root
+     * @param model
      */
-    public void drawPath(List<Tile> path, Tile target, Tile root) 
+    public void drawPath(List<Tile> path, Grid model) 
     {
         this.executor.execute(
         () ->
         {
-            path.stream().filter((tile) -> !(tile == target || tile == root)).map((tile) ->
+            path.stream().filter((tile) -> !(tile == model.getTarget() || tile == model.getRoot())).map((tile) ->
             {
                 tile.setAttributes(Tile.Type.PATH, tile.getWeight());
                 return tile;                
@@ -84,6 +83,29 @@ public final class Painter
             catch (InterruptedException ex)
             {
                 Logger.getLogger(PathfindingStrategy.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+    }
+    
+    /**
+     * Clears the previously assigned visited and path tiles
+     * @param model 
+     */
+    public void clearPath(Grid model)
+    {
+        this.executor.execute(()->
+        {
+            Tile tile;
+            for(int y = 0; y < model.getYSize(); y++)
+            {
+                for(int x = 0; x < model.getXSize(); x++)
+                {
+                    tile = model.getGrid()[x][y]; 
+                    if(tile.getType() == Tile.Type.PATH || tile.getType() == Tile.Type.VISITED)
+                    {
+                        tile.setAttributes(Tile.Type.EMPTY, tile.getWeight());
+                    }
+                }
             }
         });
     }

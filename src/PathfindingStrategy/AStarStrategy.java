@@ -56,7 +56,7 @@ public class AStarStrategy extends PathfindingStrategy
         executeAStar(rootNode, targetNode);
         
         this.addPath(nodes, path, model.getTarget());
-        painter.drawPath(path, model.getRoot(), model.getTarget());
+        painter.drawPath(path, model);
         
         return this.calculateCost(path);
     }
@@ -90,7 +90,7 @@ public class AStarStrategy extends PathfindingStrategy
                 break;
             
             currentNode = notTestedNodes.poll();
-            painter.drawTile(currentNode.getTile(), rootNode.getTile(), targetNode.getTile(), Tile.Type.VISITED, 2);
+            painter.drawTile(currentNode.getTile(), rootNode.getTile(), targetNode.getTile(), Tile.Type.HIGHLIGHT, 2);
             currentNode.setIsVisited(true);
             
             for(Node nodeNeighbor : currentNode.getNeighbors())
@@ -113,6 +113,7 @@ public class AStarStrategy extends PathfindingStrategy
                     nodeNeighbor.setGlobalGoal(nodeNeighbor.getLocalGoal() + computeHeuristic(nodeNeighbor, targetNode));
                 }
             }
+            painter.drawTile(currentNode.getTile(), rootNode.getTile(), targetNode.getTile(), Tile.Type.VISITED, 0);
         }
     }
     

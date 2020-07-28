@@ -37,14 +37,19 @@ public class DijkstraStrategy extends PathfindingStrategy
         int cost = weights.get(target);
         
         Tile tile = target;
-        do {
-            path.add(0, tile);
-            tile = parents.get(tile);
-        } while (tile != root);
         
+        // If cost is infinite, means it didn't find the target
+        if(cost != Integer.MAX_VALUE)
+        {
+            do{
+                path.add(0, tile);
+                tile = parents.get(tile);
+            } while (tile != root);
+            
+            painter.drawPath(path, grid);
+        }
         
         System.out.println("Dijkstra -> COST: " + cost);
-        painter.drawPath(path, target, root);
         
         return cost;
     }
@@ -63,6 +68,7 @@ public class DijkstraStrategy extends PathfindingStrategy
         
         // Init all tiles
         Set<Tile> unvisited = new HashSet();
+        
         grid.getTiles().stream().filter((tile) -> !(tile.isWall())).map((tile) ->
         {
             unvisited.add(tile);
@@ -81,7 +87,13 @@ public class DijkstraStrategy extends PathfindingStrategy
         while(!unvisited.isEmpty())
         {
             Tile lowCostTile = getMinWeight(unvisited, weights);
-            painter.drawTile(lowCostTile, grid.getTarget(), root, Tile.Type.VISITED, 2);
+            
+            // If we ever get a lower cost that equals infinity, it means we're stuck
+            if(weights.get(lowCostTile) == Integer.MAX_VALUE)
+                break;
+            
+            painter.drawTile(lowCostTile, grid.getTarget(), root, Tile.Type.HIGHLIGHT, 1);
+            // Remove current tile from unvisited set
             unvisited.remove(lowCostTile);
             
             // Get neighbors
@@ -99,6 +111,7 @@ public class DijkstraStrategy extends PathfindingStrategy
                     }
                 }
             }
+            painter.drawTile(lowCostTile, grid.getTarget(), root, Tile.Type.VISITED, 1);
         }
     }
     

@@ -7,12 +7,12 @@ package Model;
 
 import MazeGenerationStrategy.MazeGenerationStrategy;
 import PathfindingStrategy.PathfindingStrategy;
+import Util.Painter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Random;
 
 /**
  *
@@ -41,11 +41,15 @@ public class Grid extends Observable implements Observer
     // What change will happen to the tile on click
     private Tile.Type clickType;
     
+    // Attributes
+    private final Painter painter;
+    
     public Grid()
     {
         this.root = null;
         this.target = null;
         this.clickType = Tile.Type.ROOT;
+        painter = Painter.getInstance();
     }
     
     /**
@@ -57,41 +61,13 @@ public class Grid extends Observable implements Observer
     public boolean executePathfinding(PathfindingStrategy pathfindingStrategy) throws InterruptedException
     {
         if(root == null || target == null) return false;
+        this.painter.clearPath(this);
         
         List<Tile> path = new ArrayList<>();
         
         int cost = pathfindingStrategy.algorithm(this, path);
         
-        this.drawPath(path);
-        
         return true;
-    }
-    
-    /**
-     * Draws a path from root to target, given a list of tiles
-     */
-    private void drawPath(List<Tile> path) throws InterruptedException
-    {
-        Thread t = new Thread(() ->
-        {
-            path.stream().filter((tile) -> !(tile == target || tile == root)).map((tile) ->
-            {
-                tile.setAttributes(Tile.Type.PATH, tile.getWeight());
-                return tile;                
-            }).forEachOrdered((_item) ->
-            {
-                try
-                {
-                    Thread.sleep(25);
-                }
-                catch (InterruptedException ex)
-                {
-                    Logger.getLogger(Grid.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            });
-        }, "PathColor");
-        
-        t.start();
     }
     
     /**
@@ -157,18 +133,18 @@ public class Grid extends Observable implements Observer
     }
     
     /**
-     * Sets all Tiles in the grid to default (Empty, defaultWeight)
+     * Sets all Tiles in the grid to default (Empty, defaultWeight), except root and target!
      */
     public void clearGrid()
     {
-        this.root = null;
-        this.target = null;
-        
+        Tile tile;
         for(int y = 0; y < this.y_size; y++)
         {
             for(int x = 0; x < this.x_size; x++)
             {
-                grid[x][y].clearTile();
+                tile = grid[x][y];
+                if(tile != this.root &&  tile != this.target)
+                    tile.clearTile();
             }
         }
     }
@@ -283,6 +259,24 @@ public class Grid extends Observable implements Observer
             for(int x = 0; x < this.x_size; x++)
             {
                 grid[x][y].randomizeWeight();
+            }
+        }
+    }
+    
+    /**
+     * Adds random walls to some tiles in the grid
+     */
+    public void addRandomWalls()
+    {
+        this.clearGrid();
+        Random random = new Random();
+        
+        for(int y = 0; y < this.y_size; y++)
+        {
+            for(int x = 0; x < this.x_size; x++)
+            {
+                if((random.nextInt(2 - 0 + 1) + 0) == 1)
+                    grid[x][y].setAttributes(Tile.Type.WALL, grid[x][y].getDefaultWeight());
             }
         }
     }

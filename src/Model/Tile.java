@@ -31,16 +31,22 @@ public class Tile extends Observable
         TARGET,
         WALL,
         EMPTY,
-        VISITED,
         PATH,
-        HIGHLIGHT
+        HIGHLIGHT,
+        VISITED,
+        VISITED_LIGHT,
+        VISITED_MEDIUM,
+        VISITED_DENSE,
+        VISITED_MAX
     }
     
-    Map<Type, Color> typeMap;
-    Map<Integer, Color> weightMap;
+    private final Map<Type, Color> typeMap;
+    private final Map<Integer, Color> weightMap;
+    private final Map<Integer, Color> visitedMap;
+    private final int[] WEIGHTS = { this.getDefaultWeight(), 3, 6, 9, 12};
     
     // JavaFX Node
-    StackPane pane;
+    private final StackPane pane;
     
     // Coordinates
     private final int x;
@@ -53,7 +59,7 @@ public class Tile extends Observable
     private final int defaultWeight = 1;
     private int weight;
     private Type type;
-    private double tileGap = 1;
+    private final double tileGap = 1;
     
     public Tile(int x, int y, int size)
     {
@@ -63,19 +69,27 @@ public class Tile extends Observable
         typeMap = new HashMap<>();
         typeMap.put(Type.ROOT, Color.YELLOW);
         typeMap.put(Type.TARGET, Color.PURPLE);
-        typeMap.put(Type.VISITED, Color.LIGHTGREEN);
         typeMap.put(Type.EMPTY, Color.WHITE);
         typeMap.put(Type.WALL, Color.BLACK);
-        typeMap.put(Type.PATH, Color.GREEN);
-        typeMap.put(Type.HIGHLIGHT, Color.YELLOW);
+        typeMap.put(Type.PATH, Color.DEEPPINK);
+        typeMap.put(Type.HIGHLIGHT, Color.RED);
+        typeMap.put(Type.VISITED, Color.LIGHTGREEN);
         
-        // Weight color 
+        // Visited Color based on weight
+        visitedMap = new HashMap<>();
+        visitedMap.put(this.WEIGHTS[0], Color.PALEGREEN);
+        visitedMap.put(this.WEIGHTS[1], Color.LIGHTGREEN);
+        visitedMap.put(this.WEIGHTS[2], Color.SPRINGGREEN);
+        visitedMap.put(this.WEIGHTS[3], Color.GREENYELLOW);
+        visitedMap.put(this.WEIGHTS[4], Color.GREEN);
+        
+        // Empty Weight color 
         weightMap = new HashMap<>();
-        weightMap.put(this.defaultWeight, Color.WHITE);
-        weightMap.put(3, Color.LIGHTCYAN);
-        weightMap.put(6, Color.AQUA);
-        weightMap.put(9, Color.DEEPSKYBLUE);
-        weightMap.put(12, Color.CORNFLOWERBLUE);
+        weightMap.put(this.WEIGHTS[0], Color.WHITE);
+        weightMap.put(this.WEIGHTS[1], Color.LIGHTCYAN);
+        weightMap.put(this.WEIGHTS[2], Color.AQUA);
+        weightMap.put(this.WEIGHTS[3], Color.DEEPSKYBLUE);
+        weightMap.put(this.WEIGHTS[4], Color.CORNFLOWERBLUE);
         
         // Coordinates
         this.x = x;
@@ -115,12 +129,23 @@ public class Tile extends Observable
      */
     public void setAttributes(Type type, int weight)
     {   
-        // Set default color for given weight
-        this.rectangle.setFill(
-                (type == Type.EMPTY) ? 
-                this.weightMap.get(weight) :
-                this.typeMap.get(type)
-        );
+        Color color;
+        
+        // Pick color based on type
+        switch(type)
+        {
+            case VISITED:
+                color = this.visitedMap.get(this.getWeight());
+                break;
+            case EMPTY:
+                color = this.weightMap.get(weight);
+                break;
+            default:
+                color = this.typeMap.get(type);
+                break;
+        }
+        
+        this.rectangle.setFill(color);
         
         this.type = type;
         this.weight = weight;
@@ -170,6 +195,11 @@ public class Tile extends Observable
     public int getDefaultWeight()
     {
         return this.defaultWeight;
+    }
+
+    public Type getType()
+    {
+        return this.type;
     }
     
     /**

@@ -9,10 +9,6 @@ import Model.Grid;
 import Model.Tile;
 import Util.Painter;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Strategy signature to apply a path finding algorithm

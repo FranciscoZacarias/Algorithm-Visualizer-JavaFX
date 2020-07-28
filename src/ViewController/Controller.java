@@ -25,6 +25,7 @@ public class Controller
         this.model = model;
         this.view = view;
         this.view.setTriggers(this);
+        this.view.createGrid();
         
         this.model.addObserver(view);
     }
@@ -42,6 +43,11 @@ public class Controller
     public void doAddRandomWeights()
     {
         this.model.addRandomWeights();
+    }
+    
+    public void doAddRandomWalls()
+    {
+        this.model.addRandomWalls();
     }
     
     public void doGenerateMaze(Grid.MazeGen strategy)
