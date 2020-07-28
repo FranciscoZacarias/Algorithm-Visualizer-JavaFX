@@ -56,9 +56,8 @@ public class AStarStrategy extends PathfindingStrategy
         executeAStar(rootNode, targetNode);
         
         this.addPath(nodes, path, model.getTarget());
-        Collections.reverse(path);
+        painter.drawPath(path, model.getRoot(), model.getTarget());
         
-        System.out.println("AStar -> OPTIMAL: " + findOptimalSolution + " COST: " + this.calculateCost(path));
         return this.calculateCost(path);
     }
     
@@ -91,6 +90,7 @@ public class AStarStrategy extends PathfindingStrategy
                 break;
             
             currentNode = notTestedNodes.poll();
+            painter.drawTile(currentNode.getTile(), rootNode.getTile(), targetNode.getTile(), Tile.Type.VISITED, 2);
             currentNode.setIsVisited(true);
             
             for(Node nodeNeighbor : currentNode.getNeighbors())
@@ -177,6 +177,9 @@ public class AStarStrategy extends PathfindingStrategy
         }
         
         path.remove(path.size() - 1);
+        
+        // To make root the starting node
+        Collections.reverse(path);
         
         return path;
     }

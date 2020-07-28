@@ -44,7 +44,7 @@ public class DijkstraStrategy extends PathfindingStrategy
         
         
         System.out.println("Dijkstra -> COST: " + cost);
-        this.drawPath(path, target, root);
+        painter.drawPath(path, target, root);
         
         return cost;
     }
@@ -81,6 +81,7 @@ public class DijkstraStrategy extends PathfindingStrategy
         while(!unvisited.isEmpty())
         {
             Tile lowCostTile = getMinWeight(unvisited, weights);
+            painter.drawTile(lowCostTile, grid.getTarget(), root, Tile.Type.VISITED, 2);
             unvisited.remove(lowCostTile);
             
             // Get neighbors
