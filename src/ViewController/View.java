@@ -6,6 +6,7 @@
 package ViewController;
 
 import Model.Grid;
+import Model.PathfindingStatistics;
 import Model.Tile;
 import java.util.Observable;
 import java.util.Observer;
@@ -17,6 +18,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -25,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 /**
@@ -41,16 +44,32 @@ public class View implements Observer
     private final TextField txtXTiles;
     private final TextField txtYTiles;
     private final TextField txtTileSize;
-    private final Button tbBtnRun;
-    private final Button tbBtnClear;
-    private final Button tbBtnExit;
-    private final Button tbBtnAddWeights;
-    private final Button tbBtnAddWalls;
-    private final Button tbBtnMaze;
+    // REGION: Stats
+    private final Separator separatorStats;
+    private final Text txtStatsTitle;
+    private final Text txtStatsTitleValue;
+    private final Text txtStatsTilesTotal;
+    private final Text txtStatsTilesTotalValue;
+    private final Text txtStatsTilesVisited;
+    private final Text txtStatsTilesVisitedValue;
+    private final Text txtStatsPathFound;
+    private final Text txtStatsPathFoundValue;
+    private final Text txtStatsPathCost;
+    private final Text txtStatsPathCostValue;
+    private final Text txtStatsElapsedTime;
+    private final Text txtStatsElapsedTimeValue;
+    // ENDREGION: Stats
+    private final Text txtAlgorithms;
+    private final Button btnRun;
+    private final Button btnClear;
+    private final Button btnExit;
+    private final Button btnAddWeights;
+    private final Button btnAddWalls;
+    private final Button btnMaze;
     private final Button btnCreateGrid;
-    private final ComboBox tbAlgorithmBox;
-    private final ComboBox tbMazeGenBox;
-    private final ComboBox tbNodeBox;
+    private final ComboBox cbAlgorithmBox;
+    private final ComboBox cbMazeGenBox;
+    private final ComboBox cbNodeBox;
     
     // Grid
     private final VBox leftPane;
@@ -111,61 +130,96 @@ public class View implements Observer
         hboxNodeBox.setStyle(defaultHboxStyle);
         Text txtNodeBox = new Text("Tile Picker: ");
         txtNodeBox.setFont(defaultFont);
-        tbNodeBox = new ComboBox(FXCollections.observableArrayList(Tile.Type.values()));
-        tbNodeBox.getItems().remove(Tile.Type.VISITED);
-        tbNodeBox.getItems().remove(Tile.Type.PATH);
-        tbNodeBox.getItems().remove(Tile.Type.HIGHLIGHT);
-        tbNodeBox.getItems().remove(Tile.Type.VISITED_DENSE);
-        tbNodeBox.getItems().remove(Tile.Type.VISITED_LIGHT);
-        tbNodeBox.getItems().remove(Tile.Type.VISITED_MAX);
-        tbNodeBox.getItems().remove(Tile.Type.VISITED_MEDIUM);
-        tbNodeBox.getSelectionModel().selectFirst();
-        tbNodeBox.setTooltip(new Tooltip("Tile Type picker"));
-        hboxNodeBox.getChildren().addAll(txtNodeBox, tbNodeBox);
+        cbNodeBox = new ComboBox(FXCollections.observableArrayList(Tile.Type.values()));
+        cbNodeBox.getItems().remove(Tile.Type.VISITED);
+        cbNodeBox.getItems().remove(Tile.Type.PATH);
+        cbNodeBox.getItems().remove(Tile.Type.HIGHLIGHT);
+        cbNodeBox.getItems().remove(Tile.Type.VISITED_DENSE);
+        cbNodeBox.getItems().remove(Tile.Type.VISITED_LIGHT);
+        cbNodeBox.getItems().remove(Tile.Type.VISITED_MAX);
+        cbNodeBox.getItems().remove(Tile.Type.VISITED_MEDIUM);
+        cbNodeBox.getSelectionModel().selectFirst();
+        cbNodeBox.setTooltip(new Tooltip("Tile Type picker"));
+        hboxNodeBox.getChildren().addAll(txtNodeBox, cbNodeBox);
         
         // Pathfinding Pane
-        HBox hboxAlgorithmBox = new HBox(5);
-        hboxAlgorithmBox.setAlignment(Pos.CENTER);
-        hboxAlgorithmBox.setStyle(defaultHboxStyle);
-        tbAlgorithmBox = new ComboBox(FXCollections.observableArrayList(Grid.Algorithms.values()));
-        tbAlgorithmBox.getSelectionModel().selectFirst();
-        tbAlgorithmBox.setTooltip(new Tooltip("Algorithm picker"));
-        hboxAlgorithmBox.getChildren().addAll(tbAlgorithmBox);
+        HBox hboxcbAlgorithmBox = new HBox(5);
+        hboxcbAlgorithmBox.setAlignment(Pos.CENTER);
+        hboxcbAlgorithmBox.setStyle(defaultHboxStyle);
+        cbAlgorithmBox = new ComboBox(FXCollections.observableArrayList(Grid.Algorithms.values()));
+        cbAlgorithmBox.getSelectionModel().selectFirst();
+        cbAlgorithmBox.setTooltip(new Tooltip("Algorithm picker"));
+        txtAlgorithms = new Text("Algorithms: ");
+        txtAlgorithms.setFont(defaultFont);
+        hboxcbAlgorithmBox.getChildren().addAll(txtAlgorithms, cbAlgorithmBox);
         
         // Add Weights & Walls Pane
         HBox hboxAddWeights = new HBox(5);
         hboxAddWeights.setAlignment(Pos.CENTER);
         hboxAddWeights.setStyle(defaultHboxStyle);
-        tbBtnAddWeights = new Button("ADD WEIGHTS");
-        tbBtnAddWeights.setTooltip(new Tooltip("Adds random weights to all tiles"));
-        tbBtnAddWalls = new Button("ADD WALLS");
-        tbBtnAddWalls.setTooltip(new Tooltip("Adds random walls to the grid"));
-        hboxAddWeights.getChildren().addAll(tbBtnAddWalls, tbBtnAddWeights);
+        btnAddWeights = new Button("ADD WEIGHTS");
+        btnAddWeights.setTooltip(new Tooltip("Adds random weights to all tiles"));
+        btnAddWalls = new Button("ADD WALLS");
+        btnAddWalls.setTooltip(new Tooltip("Adds random walls to the grid"));
+        hboxAddWeights.getChildren().addAll(btnAddWalls, btnAddWeights);
         
         // Maze Generation Pane
         HBox hboxMazeGen = new HBox(5);
         hboxMazeGen.setAlignment(Pos.CENTER);
         hboxMazeGen.setStyle(defaultHboxStyle);
-        tbMazeGenBox = new ComboBox(FXCollections.observableArrayList(Grid.MazeGen.values()));
-        tbMazeGenBox.getSelectionModel().selectFirst();
-        tbMazeGenBox.setTooltip(new Tooltip("Maze generation algorithm picker"));
-        tbBtnMaze = new Button("MAZE GEN");
-        tbBtnMaze.setTooltip(new Tooltip("GENERATES A RANDOM MAZE"));
-        hboxMazeGen.getChildren().addAll(tbMazeGenBox, tbBtnMaze);
+        cbMazeGenBox = new ComboBox(FXCollections.observableArrayList(Grid.MazeGen.values()));
+        cbMazeGenBox.getSelectionModel().selectFirst();
+        cbMazeGenBox.setTooltip(new Tooltip("Maze generation algorithm picker"));
+        btnMaze = new Button("MAZE GEN");
+        btnMaze.setTooltip(new Tooltip("GENERATES A RANDOM MAZE"));
+        hboxMazeGen.getChildren().addAll(cbMazeGenBox, btnMaze);
         
         // Util buttons Pane
         HBox hboxUtilBtns = new HBox(5);
         hboxUtilBtns.setAlignment(Pos.CENTER);
         hboxUtilBtns.setStyle(defaultHboxStyle);
-        tbBtnClear = new Button("CLEAR");
-        tbBtnClear.setTooltip(new Tooltip("Resets all tiles to empty and no weight"));
-        tbBtnExit = new Button("EXIT");
-        tbBtnExit.setTooltip(new Tooltip("Exits the application"));
-        tbBtnRun = new Button("RUN");
-        tbBtnRun.setTooltip(new Tooltip("Run Pathfinding Algorithm"));
-        hboxUtilBtns.getChildren().addAll(tbBtnRun, tbBtnClear, tbBtnExit);
+        btnClear = new Button("CLEAR");
+        btnClear.setTooltip(new Tooltip("Resets all tiles to empty and no weight"));
+        btnExit = new Button("EXIT");
+        btnExit.setTooltip(new Tooltip("Exits the application"));
+        btnRun = new Button("RUN");
+        btnRun.setTooltip(new Tooltip("Run Pathfinding Algorithm"));
+        hboxUtilBtns.getChildren().addAll(btnRun, btnClear, btnExit);
         
-        leftPane.getChildren().addAll(vboxCreateGrid, hboxNodeBox, hboxAlgorithmBox, hboxAddWeights, hboxMazeGen, hboxUtilBtns);
+        // Statistics Pane
+        separatorStats = new Separator();
+        VBox vboxStats = new VBox(5);
+        vboxStats.setAlignment(Pos.CENTER_LEFT);
+        vboxStats.setStyle(defaultHboxStyle);
+        HBox hboxStatsTitle = new HBox(5);
+        hboxStatsTitle.setAlignment(Pos.CENTER);
+        txtStatsTitle = new Text("STATISTICS");
+        txtStatsTitle.setFont(Font.font(defaultFont.getName(), FontWeight.BOLD, 20));
+        txtStatsTitleValue = new Text("");
+        hboxStatsTitle.getChildren().addAll(txtStatsTitle, txtStatsTitleValue);
+        HBox hboxStatsTotal = new HBox(5);
+        txtStatsTilesTotal = new Text("Total Tiles: ");
+        txtStatsTilesTotalValue = new Text("");
+        hboxStatsTotal.getChildren().addAll(txtStatsTilesTotal, txtStatsTilesTotalValue);
+        HBox hboxStatsTilesVisited = new HBox(5);
+        txtStatsTilesVisited = new Text("Visited Tiles: ");
+        txtStatsTilesVisitedValue = new Text("");
+        hboxStatsTilesVisited.getChildren().addAll(txtStatsTilesVisited, txtStatsTilesVisitedValue);
+        HBox hboxStatsPathFound = new HBox(5);
+        txtStatsPathFound = new Text("Path Found: ");
+        txtStatsPathFoundValue = new Text("");
+        hboxStatsPathFound.getChildren().addAll(txtStatsPathFound, txtStatsPathFoundValue);
+        HBox hboxStatsPathCost = new HBox(5);
+        txtStatsPathCost = new Text("Path Cost: ");
+        txtStatsPathCostValue = new Text("");
+        hboxStatsPathCost.getChildren().addAll(txtStatsPathCost, txtStatsPathCostValue);
+        HBox hboxStatsElapsedTime = new HBox(5);
+        txtStatsElapsedTime = new Text("Elapsed Time:");
+        txtStatsElapsedTimeValue = new Text("");
+        hboxStatsElapsedTime.getChildren().addAll(txtStatsElapsedTime, txtStatsElapsedTimeValue);
+        vboxStats.getChildren().addAll(hboxStatsTitle, separatorStats, hboxStatsTotal, hboxStatsTilesVisited, hboxStatsPathFound, hboxStatsPathCost, hboxStatsElapsedTime);
+        
+        leftPane.getChildren().addAll(vboxCreateGrid, hboxNodeBox, hboxcbAlgorithmBox, hboxAddWeights, hboxMazeGen, hboxUtilBtns, vboxStats);
         // EndRegion: RightPane
         
         //  Create scene
@@ -175,41 +229,41 @@ public class View implements Observer
     public void setTriggers(Controller controller)
     {
         // Changes type of tile on click
-        tbNodeBox.setOnAction((event) -> 
+        cbNodeBox.setOnAction((event) -> 
         {
-            FXCollections.observableArrayList(Tile.Type.values()).stream().filter((item) -> (tbNodeBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
+            FXCollections.observableArrayList(Tile.Type.values()).stream().filter((item) -> (cbNodeBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
             {
                 controller.doChangeClickType(item);
             });
         });
         
         // Clear button clears the grid
-        tbBtnClear.setOnAction((event) ->
+        btnClear.setOnAction((event) ->
         {
             controller.doClearGrid();
         });
         
         // Exits the application
-        tbBtnExit.setOnAction((event) -> 
+        btnExit.setOnAction((event) -> 
         {
             System.exit(0);
         });
         
         // Adds random weights to all Tiles
-        tbBtnAddWeights.setOnAction((event) -> 
+        btnAddWeights.setOnAction((event) -> 
         {
             controller.doAddRandomWeights();
         });
         
-        tbBtnAddWalls.setOnAction((event) -> 
+        btnAddWalls.setOnAction((event) -> 
         {
             controller.doAddRandomWalls();
         });
         
         // Generates a random maze
-        tbBtnMaze.setOnAction((event) ->
+        btnMaze.setOnAction((event) ->
         {
-            FXCollections.observableArrayList(Grid.MazeGen.values()).stream().filter((item) -> (tbMazeGenBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
+            FXCollections.observableArrayList(Grid.MazeGen.values()).stream().filter((item) -> (cbMazeGenBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
             {
                 if(gridPane != null)
                     controller.doGenerateMaze(item);
@@ -232,9 +286,9 @@ public class View implements Observer
         });
         
         // Run pathfinding algorithms
-        tbBtnRun.setOnAction((event) -> 
+        btnRun.setOnAction((event) -> 
         {
-            FXCollections.observableArrayList(Grid.Algorithms.values()).stream().filter((item) -> (tbAlgorithmBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
+            FXCollections.observableArrayList(Grid.Algorithms.values()).stream().filter((item) -> (cbAlgorithmBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
             {
                 try
                 {
@@ -312,6 +366,20 @@ public class View implements Observer
     @Override
     public void update(Observable o, Object arg)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // If it gets updated by the grid
+        if(o instanceof Grid)
+        {
+            // If grid sends the statisics
+            if(arg instanceof PathfindingStatistics)
+            {
+                PathfindingStatistics stats = (PathfindingStatistics)arg;
+                
+                this.txtStatsTilesTotalValue.setText(String.valueOf(stats.getTilesTotal()));
+                this.txtStatsTilesVisitedValue.setText(String.valueOf(stats.getTilesVisited()));
+                this.txtStatsPathFoundValue.setText((stats.isPathFound()) ? "Yes" : "No");
+                this.txtStatsPathCostValue.setText(String.valueOf(stats.getPathCost()));
+                this.txtStatsElapsedTimeValue.setText(String.format("%.4f Milliseconds", stats.getElapsedTime() * Math.pow(10, -6)));
+            }
+        }
     }
 }
