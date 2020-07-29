@@ -15,8 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author frank
+ * Singleton class that handles the coloring of any element in the grid.
+ * All methods of this class run on an independent thread
  */
 public final class Painter
 {
@@ -28,6 +28,10 @@ public final class Painter
         executor = Executors.newSingleThreadExecutor();
     }
     
+    /**
+     * Returns the single instance of this class
+     * @return 
+     */
     public static Painter getInstance()
     {
         return INSTANCE;
