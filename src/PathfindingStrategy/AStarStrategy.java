@@ -135,7 +135,7 @@ public class AStarStrategy extends PathfindingStrategy
      */
     private int calculateCost(List<Tile> path)
     {
-        int total = 0;
+        int total = -1;
         total = path.stream().map((tile) -> tile.getWeight()).reduce(total, Integer::sum);
         return total;
     }
@@ -217,42 +217,75 @@ public class AStarStrategy extends PathfindingStrategy
             this.globalGoal = Double.MAX_VALUE; 
             this.localGoal = Double.MAX_VALUE;
         }
-
+        
+        /**
+         * Returns global goal for this node
+         * @return double
+         */
         public double getGlobalGoal()
         {
             return globalGoal;
         }
 
+        /**
+         * Defines the global goal for this node
+         * @param globalGoal 
+         */
         public void setGlobalGoal(double globalGoal)
         {
             this.globalGoal = globalGoal;
         }
-
+        
+        /**
+         * Returns the local goal for this node
+         * @return double
+         */
         public double getLocalGoal()
         {
             return localGoal;
         }
 
+        /**
+         * Defines the local goal for this node
+         * @param localGoal 
+         */
         public void setLocalGoal(double localGoal)
         {
             this.localGoal = localGoal;
         }
 
+        /**
+         * Returns a boolean value representing if this node was already visited
+         * @return 
+         */
         public boolean isIsVisited()
         {
             return isVisited;
         }
 
+        /**
+         * Defines if the node was visited
+         * @param isVisited 
+         */
         public void setIsVisited(boolean isVisited)
         {
             this.isVisited = isVisited;
         }
 
+        /**
+         * Returns a list of neighbors for this node
+         * @return List<Node> of neighbors
+         */
         public List<Node> getNeighbors()
         {
             return neighbors;
         }
 
+        /**
+         * Sets this node's neighbors
+         * @param nodes list of nodes to add to this node's neighbors
+         * @param model of the grid containing all the data about the nodes
+         */
         public void setNeighbors(List<Node> nodes, Grid model)
         {
             List<Tile> tileNeighbors = model.getTileNeighbors(this.getTile());
@@ -266,31 +299,55 @@ public class AStarStrategy extends PathfindingStrategy
             }
         }
 
+        /**
+         * Returns this node's tile
+         * @return 
+         */
         public Tile getTile()
         {
             return tile;
         }
         
+        /**
+         * Returns this node's parent node
+         * @return 
+         */
         public Node getParent()
         {
             return parent;
         }
 
+        /**
+         * Sets this node's parent
+         * @param parent 
+         */
         public void setParent(Node parent)
         {
             this.parent = parent;
         }
         
+        /**
+         * Returns a boolean value representing weather or not this node is a wall
+         * @return 
+         */
         public boolean isWall()
         {
             return this.tile.isWall();
         }
         
+        /**
+         * Returns x coordinate for this node
+         * @return 
+         */
         public int getX()
         {
             return this.tile.getX();
         }
         
+        /**
+         * Returns y coordinate for this node
+         * @return 
+         */
         public int getY()
         {
             return this.tile.getY();
