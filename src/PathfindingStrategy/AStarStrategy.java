@@ -55,10 +55,20 @@ public class AStarStrategy extends PathfindingStrategy
         
         executeAStar(rootNode, targetNode);
         
+        // Add path to output variable
         this.addPath(nodes, path, model.getTarget());
-        painter.drawPath(path, model);
         
-        return this.calculateCost(path);
+        // Calculate cost
+        int cost = this.calculateCost(path);
+        
+        // If path is not empty, it means it found a path between the nodes!
+        if(!path.isEmpty())
+        {
+            this.statistics.setPathFound(true, cost);
+            painter.drawPath(path, model);
+        }
+        
+        return cost;
     }
     
     private void executeAStar(Node rootNode, Node targetNode)
@@ -90,6 +100,7 @@ public class AStarStrategy extends PathfindingStrategy
                 break;
             
             currentNode = notTestedNodes.poll();
+            this.statistics.incrementVisited();
             painter.drawTile(currentNode.getTile(), rootNode.getTile(), targetNode.getTile(), Tile.Type.HIGHLIGHT, 2);
             currentNode.setIsVisited(true);
             
