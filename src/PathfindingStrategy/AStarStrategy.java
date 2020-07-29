@@ -28,7 +28,7 @@ public class AStarStrategy extends PathfindingStrategy
     }
 
     @Override
-    public int algorithm(Grid model, List<Tile> path)
+    public int runPathfinder(Grid model, List<Tile> path)
     {
         List<Node> nodes = new ArrayList<>();
         Node rootNode = null;

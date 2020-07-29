@@ -23,7 +23,7 @@ public class DijkstraStrategy extends PathfindingStrategy
     }
 
     @Override
-    public int algorithm(Grid grid, List<Tile> path)
+    public int runPathfinder(Grid grid, List<Tile> path)
     {
         Tile root = grid.getRoot();
         Tile target = grid.getTarget();
@@ -46,10 +46,9 @@ public class DijkstraStrategy extends PathfindingStrategy
                 tile = parents.get(tile);
             } while (tile != root);
             
+            this.statistics.setPathFound(true, cost);
             painter.drawPath(path, grid);
         }
-        
-        System.out.println("Dijkstra -> COST: " + cost);
         
         return cost;
     }
@@ -92,7 +91,10 @@ public class DijkstraStrategy extends PathfindingStrategy
             if(weights.get(lowCostTile) == Integer.MAX_VALUE)
                 break;
             
+            // Paints current tile and updates statistics for visited tiles
             painter.drawTile(lowCostTile, grid.getTarget(), root, Tile.Type.HIGHLIGHT, 1);
+            this.statistics.incrementVisited();
+            
             // Remove current tile from unvisited set
             unvisited.remove(lowCostTile);
             
