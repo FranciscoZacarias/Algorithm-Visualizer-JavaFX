@@ -37,6 +37,7 @@ public abstract class PathfindingStrategy
         // (...) Statistics
         long start = System.nanoTime();
         this.statistics = new PathfindingStatistics(model);
+        this.statistics.setWallSize(model.getWallsAmount());
         
         // Runs pathfinding algorithm
         int cost = this.runPathfinder(model, path);

@@ -56,10 +56,14 @@ public class View implements Observer
     private final Text txtStatsPathFoundValue;
     private final Text txtStatsPathCost;
     private final Text txtStatsPathCostValue;
+    private final Text txtStatsWallAmount;
+    private final Text txtStatsWallAmountValue;
     private final Text txtStatsElapsedTime;
     private final Text txtStatsElapsedTimeValue;
     // ENDREGION: Stats
     private final Text txtAlgorithms;
+    private final Text txtObstacles;
+    private final Text txtMaze;
     private final Button btnRun;
     private final Button btnClear;
     private final Button btnExit;
@@ -154,25 +158,40 @@ public class View implements Observer
         hboxcbAlgorithmBox.getChildren().addAll(txtAlgorithms, cbAlgorithmBox);
         
         // Add Weights & Walls Pane
+        VBox vboxObstacles = new VBox(5);
+        vboxObstacles.setStyle(defaultHboxStyle);
+        HBox hboxObstacles = new HBox(5);
+        hboxObstacles.setAlignment(Pos.CENTER);
+        txtObstacles = new Text("ADD RANDOM OBSTACLES");
+        txtObstacles.setFont(defaultFont);
+        hboxObstacles.getChildren().add(txtObstacles);
         HBox hboxAddWeights = new HBox(5);
         hboxAddWeights.setAlignment(Pos.CENTER);
-        hboxAddWeights.setStyle(defaultHboxStyle);
-        btnAddWeights = new Button("ADD WEIGHTS");
+        btnAddWeights = new Button("WEIGHTS");
         btnAddWeights.setTooltip(new Tooltip("Adds random weights to all tiles"));
-        btnAddWalls = new Button("ADD WALLS");
+        btnAddWalls = new Button("WALLS");
         btnAddWalls.setTooltip(new Tooltip("Adds random walls to the grid"));
         hboxAddWeights.getChildren().addAll(btnAddWalls, btnAddWeights);
+        vboxObstacles.getChildren().addAll(hboxObstacles, hboxAddWeights);
         
         // Maze Generation Pane
+        VBox vboxMaze = new VBox(5);
+        vboxMaze.setAlignment(Pos.CENTER);
+        vboxMaze.setStyle(defaultHboxStyle);
+        HBox hboxMaze = new HBox(5);
+        hboxMaze.setAlignment(Pos.CENTER);
+        txtMaze = new Text("GENERATE MAZE");
+        txtMaze.setFont(defaultFont);
+        hboxMaze.getChildren().add(txtMaze);
         HBox hboxMazeGen = new HBox(5);
         hboxMazeGen.setAlignment(Pos.CENTER);
-        hboxMazeGen.setStyle(defaultHboxStyle);
         cbMazeGenBox = new ComboBox(FXCollections.observableArrayList(Grid.MazeGen.values()));
         cbMazeGenBox.getSelectionModel().selectFirst();
         cbMazeGenBox.setTooltip(new Tooltip("Maze generation algorithm picker"));
         btnMaze = new Button("MAZE GEN");
         btnMaze.setTooltip(new Tooltip("GENERATES A RANDOM MAZE"));
         hboxMazeGen.getChildren().addAll(cbMazeGenBox, btnMaze);
+        vboxMaze.getChildren().addAll(hboxMaze, hboxMazeGen);
         
         // Util buttons Pane
         HBox hboxUtilBtns = new HBox(5);
@@ -197,6 +216,10 @@ public class View implements Observer
         txtStatsTitle.setFont(Font.font(defaultFont.getName(), FontWeight.BOLD, 20));
         txtStatsTitleValue = new Text("");
         hboxStatsTitle.getChildren().addAll(txtStatsTitle, txtStatsTitleValue);
+        HBox hboxStatsWalls = new HBox(5);
+        txtStatsWallAmount = new Text("Total Walls: ");
+        txtStatsWallAmountValue = new Text("");
+        hboxStatsWalls.getChildren().addAll(txtStatsWallAmount, txtStatsWallAmountValue);
         HBox hboxStatsTotal = new HBox(5);
         txtStatsTilesTotal = new Text("Total Tiles: ");
         txtStatsTilesTotalValue = new Text("");
@@ -217,9 +240,9 @@ public class View implements Observer
         txtStatsElapsedTime = new Text("Elapsed Time:");
         txtStatsElapsedTimeValue = new Text("");
         hboxStatsElapsedTime.getChildren().addAll(txtStatsElapsedTime, txtStatsElapsedTimeValue);
-        vboxStats.getChildren().addAll(hboxStatsTitle, separatorStats, hboxStatsTotal, hboxStatsTilesVisited, hboxStatsPathFound, hboxStatsPathCost, hboxStatsElapsedTime);
+        vboxStats.getChildren().addAll(hboxStatsTitle, separatorStats, hboxStatsTotal, hboxStatsWalls, hboxStatsTilesVisited, hboxStatsPathFound, hboxStatsPathCost, hboxStatsElapsedTime);
         
-        leftPane.getChildren().addAll(vboxCreateGrid, hboxNodeBox, hboxcbAlgorithmBox, hboxAddWeights, hboxMazeGen, hboxUtilBtns, vboxStats);
+        leftPane.getChildren().addAll(vboxCreateGrid, hboxNodeBox, hboxcbAlgorithmBox, vboxObstacles, vboxMaze, vboxStats, hboxUtilBtns);
         // EndRegion: RightPane
         
         //  Create scene
@@ -375,6 +398,7 @@ public class View implements Observer
                 PathfindingStatistics stats = (PathfindingStatistics)arg;
                 
                 this.txtStatsTilesTotalValue.setText(String.valueOf(stats.getTilesTotal()));
+                this.txtStatsWallAmountValue.setText(String.valueOf(stats.getWallSize()));
                 this.txtStatsTilesVisitedValue.setText(String.valueOf(stats.getTilesVisited()));
                 this.txtStatsPathFoundValue.setText((stats.isPathFound()) ? "Yes" : "No");
                 this.txtStatsPathCostValue.setText(String.valueOf(stats.getPathCost()));

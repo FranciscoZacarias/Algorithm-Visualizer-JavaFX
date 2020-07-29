@@ -149,6 +149,21 @@ public class Grid extends Observable implements Observer
         }
     }
     
+    public int getWallsAmount()
+    {
+        int totalWalls = 0;
+        
+        for(int y = 0; y < this.y_size; y++)
+        {
+            for(int x = 0; x < this.x_size; x++)
+            {
+                if(grid[x][y].isWall()) totalWalls++;
+            }
+        }
+        
+        return totalWalls;
+    }
+    
     public List<Tile> getTileNeighbors(Tile tile)
     {
         List<Tile> neighbors = new ArrayList<>();
@@ -294,6 +309,7 @@ public class Grid extends Observable implements Observer
     @Override
     public void update(Observable o, Object arg)
     {
+        // If the update came from a Tile Object
         if(o instanceof Tile)
         {
             Tile tile = (Tile)o;
@@ -311,16 +327,16 @@ public class Grid extends Observable implements Observer
             {
                 // Tiles that  can only have one ocurrence throughout the grid
                 case ROOT: case TARGET:
-                    
+
                     // Clear old tiles
                     if(clickType == Tile.Type.ROOT) 
                     {
-                        if(root != null) root.clearTile();
+                        if(this.root != null) root.clearTile();
                         this.root = tile;
                     }
                     else if(clickType == Tile.Type.TARGET) 
                     {
-                        if(target != null) target.clearTile();
+                        if(this.target != null) target.clearTile();
                         this.target = tile;
                     }
                     
@@ -332,6 +348,14 @@ public class Grid extends Observable implements Observer
                     tile.setAttributes(clickType, tile.getWeight());
                     break;
             }
+        }
+        
+        // If the update came from statistics
+        if(o instanceof PathfindingStatistics)
+        {
+            PathfindingStatistics stats = (PathfindingStatistics)o;
+            setChanged();
+            notifyObservers(stats);
         }
     }
 }

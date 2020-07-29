@@ -24,6 +24,8 @@ public class PathfindingStatistics extends Observable
     private int pathCost;
     // Time it took for the algorithm to run
     private long elapsedTime;
+    // Total walls in grid
+    private int wallSize;
     
     public PathfindingStatistics(Grid model)
     {
@@ -34,6 +36,7 @@ public class PathfindingStatistics extends Observable
         this.pathFound = false;
         this.pathCost = -1;
         this.elapsedTime = 0;
+        this.wallSize = 0;
     }
     
     /**
@@ -109,6 +112,24 @@ public class PathfindingStatistics extends Observable
     public double getElapsedTime()
     {
         return elapsedTime;
+    }
+
+    /**
+     * Returns the ammount of walls in the grid
+     * @return 
+     */
+    public int getWallSize()
+    {
+        return wallSize;
+    }
+
+    /**
+     * Sets the ammount of walls in the grid
+     * @param wallSize 
+     */
+    public void setWallSize(int wallSize)
+    {
+        this.wallSize = wallSize;
     }
     
     /**
