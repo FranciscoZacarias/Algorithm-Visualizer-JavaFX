@@ -9,7 +9,7 @@ import java.util.Observable;
 
 
 /**
- *
+ * Keeps track of statistics for the pathfinding algorithms
  * @author frank
  */
 public class PathfindingStatistics extends Observable
@@ -36,37 +36,65 @@ public class PathfindingStatistics extends Observable
         this.elapsedTime = 0;
     }
     
+    /**
+     * Increments one into statistics
+     */
     public void incrementVisited()
     {
         this.tilesVisited++;
     }
     
+    /**
+     * Sets a boolean value to pathFound, which represents if any path was found between two nodes
+     * @param pathFound boolean value
+     * @param pathCost cost of path (if pathFound is false, this will be -1 regardless of parameter)
+     */
     public void setPathFound(boolean pathFound, int pathCost)
     {
         this.pathFound = pathFound;
-        this.pathCost = pathCost;
+        this.pathCost = (pathFound) ? pathCost : -1;
     }
-
+    
+    /**
+     * Sets the elapsed time
+     * @param elapsedTime long
+     */
     public void setElapsedTime(long elapsedTime)
     {
         this.elapsedTime = elapsedTime;
     }
     
+    /**
+     * Returns total tiles
+     * @return int
+     */
     public int getTilesTotal()
     {
         return tilesTotal;
     }
 
+    /**
+     * Returns amount of tiles visited by the algorithm
+     * @return int
+     */
     public int getTilesVisited()
     {
         return tilesVisited;
     }
-
+    
+    /**
+     * Returns if the path was found
+     * @return boolean
+     */
     public boolean isPathFound()
     {
         return pathFound;
     }
 
+    /**
+     * Gets the cost of the path found
+     * @return int
+     */
     public int getPathCost()
     {
         return pathCost;
@@ -83,6 +111,9 @@ public class PathfindingStatistics extends Observable
         return elapsedTime;
     }
     
+    /**
+     * Calls setChanged and notifyObservers to remotely update any observers observing these statistics
+     */
     public void updateObservers()
     {
         setChanged();
@@ -96,6 +127,5 @@ public class PathfindingStatistics extends Observable
                 this.getTilesTotal(), this.getTilesVisited(), this.isPathFound(), (this.isPathFound()) ? this.getPathCost() : -1, this.getElapsedTime() * Math.pow(10, -6));
         
         return str;
-        //return "PathfindingStatistics{" + "tilesTotal=" + tilesTotal + ", tilesVisited=" + tilesVisited + ", pathFound=" + pathFound + ", pathCost=" + pathCost + ", elapsedTime=" + elapsedTime * Math.pow(10, -6) + "milliseconds" + '}';
     }
 }
