@@ -133,22 +133,23 @@ public class Grid extends Observable implements Observer
     }
     
     /**
-     * Sets all Tiles in the grid to default (Empty, defaultWeight), except root and target!
+     * Sets all Tiles in the grid to default (Empty, defaultWeight)!
      */
     public void clearGrid()
     {
-        Tile tile;
         for(int y = 0; y < this.y_size; y++)
         {
             for(int x = 0; x < this.x_size; x++)
             {
-                tile = grid[x][y];
-                if(tile != this.root &&  tile != this.target)
-                    tile.clearTile();
+                grid[x][y].clearTile();
             }
         }
     }
     
+    /**
+     * Returns total amount of walls in the grid
+     * @return 
+     */
     public int getWallsAmount()
     {
         int totalWalls = 0;
@@ -164,6 +165,11 @@ public class Grid extends Observable implements Observer
         return totalWalls;
     }
     
+    /**
+     * Return neighbors of 'tile'
+     * @param tile
+     * @return 
+     */
     public List<Tile> getTileNeighbors(Tile tile)
     {
         List<Tile> neighbors = new ArrayList<>();
@@ -214,6 +220,62 @@ public class Grid extends Observable implements Observer
     public Tile getEastTile(Tile tile)
     {
         return (tile.getX() + 1  <= x_size - 1) ? grid[tile.getX() + 1][tile.getY()] : null;
+    }
+    
+    /**
+     * Returns true jf 'tile' is directly north to 'compare' (same x coord)
+     * @param tile
+     * @param compare
+     * @return 
+     */
+    public boolean isOnNorth(Tile tile, Tile compare)
+    {
+        if(tile.getX() != compare.getX()) 
+            return false;
+        
+        return tile.getY() < compare.getY();
+    }
+    
+    /**
+     * Returns true jf 'tile' is directly south to 'compare' (same x coord)
+     * @param tile
+     * @param compare
+     * @return 
+     */
+    public boolean isOnSouth(Tile tile, Tile compare)
+    {
+        if(tile.getX() != compare.getX()) 
+            return false;
+        
+        return tile.getY() > compare.getY();
+    }
+    
+    /**
+     * Returns true jf 'tile' is directly west to 'compare' (same y coord)
+     * @param tile
+     * @param compare
+     * @return 
+     */
+    public boolean isOnWest(Tile tile, Tile compare)
+    {
+        if(tile.getY() != compare.getY()) 
+            return false;
+        
+        return tile.getX() < compare.getX();
+    }
+    
+    /**
+     * Returns true jf 'tile' is directly north to 'compare' (same y coord)
+     * @param tile
+     * @param compare
+     * @return 
+     */
+    public boolean isOnEast(Tile tile, Tile compare)
+    {
+        if(tile.getY() != compare.getY()) 
+            return false;
+        
+        return tile.getX() > compare.getX();
     }
     
     /**

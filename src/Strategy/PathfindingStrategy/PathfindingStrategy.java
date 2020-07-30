@@ -23,7 +23,7 @@ public abstract class PathfindingStrategy
     
     public PathfindingStrategy()
     {
-        painter = Painter.getInstance();
+        this.painter = Painter.getInstance();
     }
     
     /**

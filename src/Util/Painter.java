@@ -70,15 +70,15 @@ public final class Painter
      * @param tile Tile to color
      * @param target We pass this to avoid overriding it
      * @param root We pass this to avoid overriding it
-     * @param color Color to paint the tile
+     * @param type Color to paint the tile
      * @param sleep time to wait before next task in thread
      */
-    public void drawTile(Tile tile, Tile target, Tile root, Tile.Type color, long sleep)
+    public void drawTile(Tile tile, Tile target, Tile root, Tile.Type type, long sleep)
     {
         this.executor.execute(()->
         {
             if(tile != target && tile != root)
-                tile.setAttributes(color, tile.getWeight());
+                tile.setAttributes(type, tile.getWeight());
            
             try
             {
