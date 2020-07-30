@@ -7,7 +7,7 @@ package Util;
 
 import Model.Grid;
 import Model.Tile;
-import PathfindingStrategy.PathfindingStrategy;
+import Strategy.PathfindingStrategy.PathfindingStrategy;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;

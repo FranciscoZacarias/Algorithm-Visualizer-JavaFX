@@ -59,7 +59,7 @@ public class Tile extends Observable
     private final int defaultWeight = 1;
     private int weight;
     private Type type;
-    private final double tileGap = 1;
+    private final double tileGap = 0;
     
     public Tile(int x, int y, int size)
     {
