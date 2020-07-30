@@ -5,12 +5,17 @@
  */
 package Factory;
 
-import MazeGenerationStrategy.BacktrackingStrategy;
-import MazeGenerationStrategy.MazeGenerationStrategy;
+import Strategy.MazeGenerationStrategy.BacktrackingStrategy;
+import Strategy.MazeGenerationStrategy.MazeGenerationStrategy;
 import Model.Grid;
-import PathfindingStrategy.AStarStrategy;
-import PathfindingStrategy.DijkstraStrategy;
-import PathfindingStrategy.PathfindingStrategy;
+import Strategy.HeuristicStrategy.DiagonalStrategy;
+import Strategy.HeuristicStrategy.EuclideanStrategy;
+import Strategy.HeuristicStrategy.HeuristicStrategy;
+import Strategy.HeuristicStrategy.ManhattanStrategy;
+import Strategy.HeuristicStrategy.PythagorasStrategy;
+import Strategy.PathfindingStrategy.AStarStrategy;
+import Strategy.PathfindingStrategy.DijkstraStrategy;
+import Strategy.PathfindingStrategy.PathfindingStrategy;
 
 /**
  * Factory that returns a pathfinding strategy
@@ -19,18 +24,36 @@ import PathfindingStrategy.PathfindingStrategy;
 public class StrategyFactory
 {
     // Pathfinding Factory
-    public static PathfindingStrategy getPathfindingStrategy(Grid.Algorithms strategy)
+    public static PathfindingStrategy getPathfindingStrategy(Grid.Algorithms algorithmStrategy, HeuristicStrategy heuristicStrategy)
     {
-        switch(strategy)
+        switch(algorithmStrategy)
         {
             case Dijkstra:
                 return new DijkstraStrategy();
             case AStar:
-                return new AStarStrategy(false);
+                return new AStarStrategy(false, heuristicStrategy);
             case AStarOptimal:
-                return new AStarStrategy(true);
+                return new AStarStrategy(true, heuristicStrategy);
             default:
                 throw new IllegalArgumentException("Pathfinding algorithm not found!");
+        }
+    }
+    
+    // Heuristic for A* Factory
+    public static HeuristicStrategy getHeuristicStrategy(AStarStrategy.Heuristic strategy)
+    {
+        switch(strategy)
+        {
+            case Pythagoras:
+                return new PythagorasStrategy();
+            case Manhattan:
+                return new ManhattanStrategy();
+            case Diagonal:
+                return new DiagonalStrategy();
+            case Eudclidean:
+                return new EuclideanStrategy();
+            default:
+                throw new IllegalArgumentException("Heuristic strategy not found!");
         }
     }
     

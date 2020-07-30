@@ -8,12 +8,14 @@ package ViewController;
 import Model.Grid;
 import Model.PathfindingStatistics;
 import Model.Tile;
+import Strategy.PathfindingStrategy.AStarStrategy;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -37,8 +39,8 @@ import javafx.scene.text.Text;
 public class View implements Observer
 {
     // Window dimensions
-    private final int WIDTH = 1285;
-    private final int HEIGHT = 702;
+    private final int WIDTH = 1380;
+    private final int HEIGHT = 720;
     
     // JavaFX Scene Nodes
     private final TextField txtXTiles;
@@ -46,6 +48,7 @@ public class View implements Observer
     private final TextField txtTileSize;
     // REGION: Stats
     private final Separator separatorStats;
+    private final Separator separatorAlgo;
     private final Text txtStatsTitle;
     private final Text txtStatsTitleValue;
     private final Text txtStatsTilesTotal;
@@ -62,6 +65,7 @@ public class View implements Observer
     private final Text txtStatsElapsedTimeValue;
     // ENDREGION: Stats
     private final Text txtAlgorithms;
+    private final Text txtAlgorithmsHeuristic;
     private final Text txtObstacles;
     private final Text txtMaze;
     private final Button btnRun;
@@ -72,6 +76,7 @@ public class View implements Observer
     private final Button btnMaze;
     private final Button btnCreateGrid;
     private final ComboBox cbAlgorithmBox;
+    private final ComboBox cbHeuristicBox;
     private final ComboBox cbMazeGenBox;
     private final ComboBox cbNodeBox;
     
@@ -85,6 +90,7 @@ public class View implements Observer
     private final Scene scene;
     
     // Attributes
+    private final int padding = 2;
     private final String defaultXSize = "51";
     private final String defaultYSize = "35";
     private final String defaultTileSize = "20";
@@ -92,7 +98,7 @@ public class View implements Observer
     private final Font defaultFont = Font.font("Courier New", 14);
     private final String defaultHboxStyle = "-fx-padding: 10;" 
         + "-fx-border-style: solid inside;"
-        + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+        + "-fx-border-width: 2;" + "-fx-border-insets: " + padding + ";"
         + "-fx-border-radius: 4;" + "-fx-border-color: lightgray;";
     
     public View(Grid model)
@@ -103,15 +109,15 @@ public class View implements Observer
         
         // Region: LeftPane
         this.leftPane = new VBox();
-        this.leftPane.setPadding(new Insets(5, 5, 5, 5));
+        this.leftPane.setPadding(new Insets(padding, padding, padding, padding));
         this.leftPane.setSpacing(10);
                 
         // Create Grid Pane
-        VBox vboxCreateGrid = new VBox(5);
+        VBox vboxCreateGrid = new VBox(padding);
         vboxCreateGrid.setStyle(defaultHboxStyle);
         GridPane createPane = new GridPane();
         createPane.setHgap(5);
-        createPane.setPadding(new Insets(5, 5, 5, 5));
+        createPane.setPadding(new Insets(padding, padding, padding, padding));
         createPane.add(new Text("X: "), 0, 0);
         txtXTiles = new TextField(defaultXSize);
         createPane.add(txtXTiles, 1, 0);
@@ -121,7 +127,7 @@ public class View implements Observer
         createPane.add(new Text("Size: "), 4, 0);
         txtTileSize = new TextField(defaultTileSize); 
         createPane.add(txtTileSize, 5, 0);
-        HBox hboxCreateBtn = new HBox(5);
+        HBox hboxCreateBtn = new HBox(padding);
         hboxCreateBtn.setAlignment(Pos.CENTER);
         btnCreateGrid = new Button("CREATE NEW GRID");
         btnCreateGrid.setTooltip(new Tooltip("Overrides previous grid"));
@@ -129,7 +135,7 @@ public class View implements Observer
         vboxCreateGrid.getChildren().addAll(createPane, hboxCreateBtn);
         
         //Tile Picker Pane
-        HBox hboxNodeBox = new HBox(5);
+        HBox hboxNodeBox = new HBox(padding);
         hboxNodeBox.setAlignment(Pos.CENTER);
         hboxNodeBox.setStyle(defaultHboxStyle);
         Text txtNodeBox = new Text("Tile Picker: ");
@@ -147,25 +153,38 @@ public class View implements Observer
         hboxNodeBox.getChildren().addAll(txtNodeBox, cbNodeBox);
         
         // Pathfinding Pane
-        HBox hboxcbAlgorithmBox = new HBox(5);
+        separatorAlgo = new Separator(Orientation.VERTICAL);
+        VBox vboxAlgorithmBox = new VBox(padding);
+        vboxAlgorithmBox.setAlignment(Pos.CENTER);
+        vboxAlgorithmBox.setStyle(defaultHboxStyle);
+        HBox hboxAlgorithmTxt = new HBox(padding);
+        hboxAlgorithmTxt.setAlignment(Pos.BASELINE_CENTER);
+        txtAlgorithms = new Text("Algorithms");
+        txtAlgorithms.setFont(defaultFont);
+        txtAlgorithmsHeuristic = new Text("Heuristics");
+        txtAlgorithmsHeuristic.setFont(defaultFont);
+        hboxAlgorithmTxt.getChildren().addAll(txtAlgorithms, separatorAlgo, txtAlgorithmsHeuristic);
+        HBox hboxcbAlgorithmBox = new HBox(padding);
         hboxcbAlgorithmBox.setAlignment(Pos.CENTER);
-        hboxcbAlgorithmBox.setStyle(defaultHboxStyle);
         cbAlgorithmBox = new ComboBox(FXCollections.observableArrayList(Grid.Algorithms.values()));
         cbAlgorithmBox.getSelectionModel().selectFirst();
         cbAlgorithmBox.setTooltip(new Tooltip("Algorithm picker"));
-        txtAlgorithms = new Text("Algorithms: ");
-        txtAlgorithms.setFont(defaultFont);
-        hboxcbAlgorithmBox.getChildren().addAll(txtAlgorithms, cbAlgorithmBox);
+        cbHeuristicBox = new ComboBox(FXCollections.observableArrayList(AStarStrategy.Heuristic.values()));
+        cbHeuristicBox.getSelectionModel().selectFirst();
+        cbHeuristicBox.setTooltip(new Tooltip("Heuristic for A* algorithm"));
+        cbHeuristicBox.setDisable(true);
+        hboxcbAlgorithmBox.getChildren().addAll(cbAlgorithmBox, cbHeuristicBox);
+        vboxAlgorithmBox.getChildren().addAll(hboxAlgorithmTxt, hboxcbAlgorithmBox);
         
         // Add Weights & Walls Pane
-        VBox vboxObstacles = new VBox(5);
+        VBox vboxObstacles = new VBox(padding);
         vboxObstacles.setStyle(defaultHboxStyle);
-        HBox hboxObstacles = new HBox(5);
+        HBox hboxObstacles = new HBox(padding);
         hboxObstacles.setAlignment(Pos.CENTER);
         txtObstacles = new Text("ADD RANDOM OBSTACLES");
         txtObstacles.setFont(defaultFont);
         hboxObstacles.getChildren().add(txtObstacles);
-        HBox hboxAddWeights = new HBox(5);
+        HBox hboxAddWeights = new HBox(padding);
         hboxAddWeights.setAlignment(Pos.CENTER);
         btnAddWeights = new Button("WEIGHTS");
         btnAddWeights.setTooltip(new Tooltip("Adds random weights to all tiles"));
@@ -175,15 +194,15 @@ public class View implements Observer
         vboxObstacles.getChildren().addAll(hboxObstacles, hboxAddWeights);
         
         // Maze Generation Pane
-        VBox vboxMaze = new VBox(5);
+        VBox vboxMaze = new VBox(padding);
         vboxMaze.setAlignment(Pos.CENTER);
         vboxMaze.setStyle(defaultHboxStyle);
-        HBox hboxMaze = new HBox(5);
+        HBox hboxMaze = new HBox(padding);
         hboxMaze.setAlignment(Pos.CENTER);
         txtMaze = new Text("GENERATE MAZE");
         txtMaze.setFont(defaultFont);
         hboxMaze.getChildren().add(txtMaze);
-        HBox hboxMazeGen = new HBox(5);
+        HBox hboxMazeGen = new HBox(padding);
         hboxMazeGen.setAlignment(Pos.CENTER);
         cbMazeGenBox = new ComboBox(FXCollections.observableArrayList(Grid.MazeGen.values()));
         cbMazeGenBox.getSelectionModel().selectFirst();
@@ -194,7 +213,7 @@ public class View implements Observer
         vboxMaze.getChildren().addAll(hboxMaze, hboxMazeGen);
         
         // Util buttons Pane
-        HBox hboxUtilBtns = new HBox(5);
+        HBox hboxUtilBtns = new HBox(padding);
         hboxUtilBtns.setAlignment(Pos.CENTER);
         hboxUtilBtns.setStyle(defaultHboxStyle);
         btnClear = new Button("CLEAR");
@@ -207,42 +226,42 @@ public class View implements Observer
         
         // Statistics Pane
         separatorStats = new Separator();
-        VBox vboxStats = new VBox(5);
+        VBox vboxStats = new VBox(padding);
         vboxStats.setAlignment(Pos.CENTER_LEFT);
         vboxStats.setStyle(defaultHboxStyle);
-        HBox hboxStatsTitle = new HBox(5);
+        HBox hboxStatsTitle = new HBox(padding);
         hboxStatsTitle.setAlignment(Pos.CENTER);
         txtStatsTitle = new Text("STATISTICS");
         txtStatsTitle.setFont(Font.font(defaultFont.getName(), FontWeight.BOLD, 20));
         txtStatsTitleValue = new Text("");
         hboxStatsTitle.getChildren().addAll(txtStatsTitle, txtStatsTitleValue);
-        HBox hboxStatsWalls = new HBox(5);
+        HBox hboxStatsWalls = new HBox(padding);
         txtStatsWallAmount = new Text("Total Walls: ");
         txtStatsWallAmountValue = new Text("");
         hboxStatsWalls.getChildren().addAll(txtStatsWallAmount, txtStatsWallAmountValue);
-        HBox hboxStatsTotal = new HBox(5);
+        HBox hboxStatsTotal = new HBox(padding);
         txtStatsTilesTotal = new Text("Total Tiles: ");
         txtStatsTilesTotalValue = new Text("");
         hboxStatsTotal.getChildren().addAll(txtStatsTilesTotal, txtStatsTilesTotalValue);
-        HBox hboxStatsTilesVisited = new HBox(5);
+        HBox hboxStatsTilesVisited = new HBox(padding);
         txtStatsTilesVisited = new Text("Visited Tiles: ");
         txtStatsTilesVisitedValue = new Text("");
         hboxStatsTilesVisited.getChildren().addAll(txtStatsTilesVisited, txtStatsTilesVisitedValue);
-        HBox hboxStatsPathFound = new HBox(5);
+        HBox hboxStatsPathFound = new HBox(padding);
         txtStatsPathFound = new Text("Path Found: ");
         txtStatsPathFoundValue = new Text("");
         hboxStatsPathFound.getChildren().addAll(txtStatsPathFound, txtStatsPathFoundValue);
-        HBox hboxStatsPathCost = new HBox(5);
+        HBox hboxStatsPathCost = new HBox(padding);
         txtStatsPathCost = new Text("Path Cost: ");
         txtStatsPathCostValue = new Text("");
         hboxStatsPathCost.getChildren().addAll(txtStatsPathCost, txtStatsPathCostValue);
-        HBox hboxStatsElapsedTime = new HBox(5);
+        HBox hboxStatsElapsedTime = new HBox(padding);
         txtStatsElapsedTime = new Text("Elapsed Time:");
         txtStatsElapsedTimeValue = new Text("");
         hboxStatsElapsedTime.getChildren().addAll(txtStatsElapsedTime, txtStatsElapsedTimeValue);
         vboxStats.getChildren().addAll(hboxStatsTitle, separatorStats, hboxStatsTotal, hboxStatsWalls, hboxStatsTilesVisited, hboxStatsPathFound, hboxStatsPathCost, hboxStatsElapsedTime);
         
-        leftPane.getChildren().addAll(vboxCreateGrid, hboxNodeBox, hboxcbAlgorithmBox, vboxObstacles, vboxMaze, vboxStats, hboxUtilBtns);
+        leftPane.getChildren().addAll(vboxCreateGrid, hboxNodeBox, vboxAlgorithmBox, vboxObstacles, vboxMaze, vboxStats, hboxUtilBtns);
         // EndRegion: RightPane
         
         //  Create scene
@@ -258,6 +277,12 @@ public class View implements Observer
             {
                 controller.doChangeClickType(item);
             });
+        });
+        
+        // Locks heuristic if algorithm is not A*
+        cbAlgorithmBox.setOnAction((event) ->
+        {
+            cbHeuristicBox.setDisable(!(cbAlgorithmBox.getSelectionModel().getSelectedItem().toString().contains("AStar")));
         });
         
         // Clear button clears the grid
@@ -311,17 +336,37 @@ public class View implements Observer
         // Run pathfinding algorithms
         btnRun.setOnAction((event) -> 
         {
-            FXCollections.observableArrayList(Grid.Algorithms.values()).stream().filter((item) -> (cbAlgorithmBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
+            Grid.Algorithms algorithm = null;
+            AStarStrategy.Heuristic heuristic = null;
+            
+            for(Grid.Algorithms algo : FXCollections.observableArrayList(Grid.Algorithms.values()))
             {
-                try
+                if(algo == cbAlgorithmBox.getValue())
                 {
-                    boolean success = controller.doShortestPathAlgorithm(item);
+                    algorithm = algo;
+                }
+            }
+            
+            for(AStarStrategy.Heuristic heur : FXCollections.observableArrayList(AStarStrategy.Heuristic.values()))
+            {
+                if(heur == cbHeuristicBox.getValue())
+                {
+                    heuristic = heur;
+                }
+            }
+            
+            boolean success;
+            if(algorithm != null && heuristic != null)
+            {
+                try 
+                {
+                    success = controller.doShortestPathAlgorithm(algorithm, heuristic);
                 } 
-                catch (InterruptedException ex)
+                catch (InterruptedException ex) 
                 {
                     Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            });
+            }
         });
     }
     

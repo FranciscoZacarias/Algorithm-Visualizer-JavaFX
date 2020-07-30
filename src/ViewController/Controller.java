@@ -7,9 +7,11 @@ package ViewController;
 
 import Model.Grid;
 import Model.Tile;
-import PathfindingStrategy.PathfindingStrategy;
+import Strategy.PathfindingStrategy.PathfindingStrategy;
 import Factory.StrategyFactory;
-import MazeGenerationStrategy.MazeGenerationStrategy;
+import Strategy.HeuristicStrategy.HeuristicStrategy;
+import Strategy.MazeGenerationStrategy.MazeGenerationStrategy;
+import Strategy.PathfindingStrategy.AStarStrategy;
 
 /**
  *
@@ -56,9 +58,10 @@ public class Controller
         this.model.generateRandomMaze(mazeGenerationStrategy);
     }
     
-    public boolean doShortestPathAlgorithm(Grid.Algorithms strategy) throws InterruptedException
+    public boolean doShortestPathAlgorithm(Grid.Algorithms algorithm, AStarStrategy.Heuristic heuristic) throws InterruptedException
     {
-        PathfindingStrategy pathfindingStrategy = StrategyFactory.getPathfindingStrategy(strategy);
+        HeuristicStrategy heuristicStrategy = StrategyFactory.getHeuristicStrategy(heuristic);
+        PathfindingStrategy pathfindingStrategy = StrategyFactory.getPathfindingStrategy(algorithm, heuristicStrategy);
         return this.model.executePathfinding(pathfindingStrategy);
     }
 }

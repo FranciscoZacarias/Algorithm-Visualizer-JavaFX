@@ -5,8 +5,8 @@
  */
 package Model;
 
-import MazeGenerationStrategy.MazeGenerationStrategy;
-import PathfindingStrategy.PathfindingStrategy;
+import Strategy.MazeGenerationStrategy.MazeGenerationStrategy;
+import Strategy.PathfindingStrategy.PathfindingStrategy;
 import Util.Painter;
 import java.util.ArrayList;
 import java.util.List;
