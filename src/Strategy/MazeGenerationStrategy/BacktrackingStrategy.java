@@ -59,30 +59,27 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
      * @param a Tile 
      * @param b Tile
      */
-    private void removeWallBetween(Tile[][] grid, Tile a, Tile b)
+    private void removeWallBetween(Tile[][] grid, Tile a, Tile b, Stack<Tile> painterStack)
     {
+        int x = a.getX();
+        int y = a.getY();
+        
         // Remove wall between currentTile and randomNeighbor
-        if(a.getX() < b.getX())
-        {
-            grid[a.getX() + 1][a.getY()].setAttributes(Tile.Type.EMPTY, a.getDefaultWeight());
-        }
-        else if(a.getX() > b.getX())
-        {
-            grid[a.getX() - 1][a.getY()].setAttributes(Tile.Type.EMPTY, a.getDefaultWeight());
-        }
-        else if(a.getY() > b.getY())
-        {
-            grid[a.getX()][a.getY() - 1].setAttributes(Tile.Type.EMPTY, a.getDefaultWeight());
-        }
-        else if(a.getY() < b.getY())
-        {
-            grid[a.getX()][a.getY() + 1].setAttributes(Tile.Type.EMPTY, a.getDefaultWeight());
-        }
+        if     (a.getX() < b.getX()) x += 1;
+        else if(a.getY() < b.getY()) y += 1;
+        else if(a.getX() > b.getX()) x -= 1;
+        else if(a.getY() > b.getY()) y -= 1;
+        
+        this.painter.drawTile(grid[x][y], null, null, Tile.Type.VISITED, this.painterWait);
+        painterStack.add(grid[x][y]);
     }
     
     @Override
     public void generate(Grid model)
     {
+        // Helper stack for painting the algorithm
+        Stack<Tile> paintStack = new Stack<>();
+        
         // Clear grid first
         model.clearGrid();
         
@@ -106,6 +103,7 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
         
         stack.push(currentTile);
         visited.add(currentTile);
+        paintStack.add(currentTile);
         
         while(!stack.isEmpty())
         {
@@ -120,14 +118,27 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
             if(neighbors.isEmpty())
             {
                 currentTile = stack.pop();
+
+                // Set visited tiles to empty (for visualization purposes)
+                // the following do while does not have impact on the algorithm
+                Tile temp;
+                do
+                {
+                    temp = paintStack.pop();
+                    this.painter.drawTile(temp, null, null, Tile.Type.EMPTY, painterWait);
+                    
+                } while(temp != currentTile && !paintStack.isEmpty());
+                
                 continue;
             }
             
             // Pick random neighbor from not visited neighbors
             Tile randomNeighbor = neighbors.get(this.random.nextInt(neighbors.size()));
+            this.painter.drawTile(randomNeighbor, null, null, Tile.Type.VISITED, this.painterWait);
+            paintStack.add(randomNeighbor);
             
             // Remove walls in between
-            this.removeWallBetween(grid, currentTile, randomNeighbor);
+            this.removeWallBetween(grid, currentTile, randomNeighbor, paintStack);
             
             // Set picked neighbor as current tile for next 
             currentTile = randomNeighbor;
@@ -135,7 +146,6 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
             visited.add(randomNeighbor);
             // Push to stack
             stack.push(randomNeighbor);
-            
         }
     }
 }

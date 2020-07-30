@@ -7,6 +7,7 @@ package Strategy.MazeGenerationStrategy;
 
 import Model.Grid;
 import Model.Tile;
+import Util.Painter;
 import java.util.Random;
 /**
  *
@@ -14,9 +15,15 @@ import java.util.Random;
  */
 public abstract class MazeGenerationStrategy
 {
-    Random random;
+    protected Random random;
+    protected Painter painter;
+    protected long painterWait;
     
-    public MazeGenerationStrategy(){}
+    public MazeGenerationStrategy()
+    {
+        this.painter = Painter.getInstance();
+        this.painterWait = 4;
+    }
     
     /**
      * Generates a random maze in 'model'. This algorithm handles the tile type changes
@@ -26,7 +33,7 @@ public abstract class MazeGenerationStrategy
 
     /**
      * All 'generate' algorithms must call this function once in the beginning.
-     * This function will set all Tiles w/o x AND y coordinate not even to a WALL.
+     * This function will set any not even Tiles to a WALL.
      * Because walls are as thick as the path, we will consider for the maze 'pathing'
      * only Tiles with even coordinates (I.e. x:2,y:4 x:0:y0)
      * The algorithm is responsible then for carving out the path through the walls
@@ -43,7 +50,10 @@ public abstract class MazeGenerationStrategy
             for(int x = 0; x < x_size; x++)
             {
                 temp = grid[x][y];
-                if((y % 2 != 0) || (x % 2 != 0)) temp.setAttributes(Tile.Type.WALL, temp.getWeight());
+                if((y % 2 != 0) || (x % 2 != 0)) 
+                {
+                    this.painter.drawTile(temp, null, null, Tile.Type.WALL, 3);
+                }
             }
         }
     }
