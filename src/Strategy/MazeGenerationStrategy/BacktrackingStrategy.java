@@ -10,7 +10,9 @@ import Model.Tile;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
@@ -59,7 +61,7 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
      * @param a Tile 
      * @param b Tile
      */
-    private void removeWallBetween(Tile[][] grid, Tile a, Tile b, Stack<Tile> painterStack)
+    private void removeWallBetween(Tile[][] grid, Tile a, Tile b, Queue<Tile> paintQueue)
     {
         int x = a.getX();
         int y = a.getY();
@@ -70,24 +72,19 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
         else if(a.getX() > b.getX()) x -= 1;
         else if(a.getY() > b.getY()) y -= 1;
         
-        this.painter.drawTile(grid[x][y], null, null, Tile.Type.VISITED, this.painterWait);
-        painterStack.add(grid[x][y]);
+        // This logic is for visualization
+        this.painter.drawTile(paintQueue.poll(), null, null, Tile.Type.EMPTY, painterWait);
+        paintQueue.add(grid[x][y]);
+        this.painter.drawTile(grid[x][y], null, null, Tile.Type.HIGHLIGHT, this.painterWait);
     }
     
     @Override
-    public void generate(Grid model)
+    public void algorithm(Grid model)
     {
-        // Helper stack for painting the algorithm
-        Stack<Tile> paintStack = new Stack<>();
-        
-        // Clear grid first
-        model.clearGrid();
+        Queue<Tile> paintQueue = new LinkedList<>();
         
         // Grid
         Tile[][] grid = model.getGrid();
-        
-        // Set default walls
-        this.setDefaultWalls(grid, model.getXSize(), model.getYSize());
         
         // Sets new random
         this.getNewRandom();
@@ -103,7 +100,9 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
         
         stack.push(currentTile);
         visited.add(currentTile);
-        paintStack.add(currentTile);
+        
+        paintQueue.add(currentTile);
+        this.painter.drawTile(currentTile, null, null, Tile.Type.HIGHLIGHT, painterWait);
         
         while(!stack.isEmpty())
         {
@@ -118,27 +117,15 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
             if(neighbors.isEmpty())
             {
                 currentTile = stack.pop();
-
-                // Set visited tiles to empty (for visualization purposes)
-                // the following do while does not have impact on the algorithm
-                Tile temp;
-                do
-                {
-                    temp = paintStack.pop();
-                    this.painter.drawTile(temp, null, null, Tile.Type.EMPTY, painterWait);
-                    
-                } while(temp != currentTile && !paintStack.isEmpty());
-                
                 continue;
             }
             
             // Pick random neighbor from not visited neighbors
             Tile randomNeighbor = neighbors.get(this.random.nextInt(neighbors.size()));
-            this.painter.drawTile(randomNeighbor, null, null, Tile.Type.VISITED, this.painterWait);
-            paintStack.add(randomNeighbor);
+            this.painter.drawTile(randomNeighbor, null, null, Tile.Type.EMPTY, this.painterWait);
             
             // Remove walls in between
-            this.removeWallBetween(grid, currentTile, randomNeighbor, paintStack);
+            this.removeWallBetween(grid, currentTile, randomNeighbor, paintQueue);
             
             // Set picked neighbor as current tile for next 
             currentTile = randomNeighbor;
@@ -146,6 +133,14 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
             visited.add(randomNeighbor);
             // Push to stack
             stack.push(randomNeighbor);
+            
+            //  This is logic for visualization
+            this.painter.drawTile(paintQueue.poll(), null, null, Tile.Type.EMPTY, painterWait);
+            paintQueue.add(randomNeighbor);
+            this.painter.drawTile(randomNeighbor, null, null, Tile.Type.HIGHLIGHT, painterWait);
         }
+        
+        while(!paintQueue.isEmpty())
+            this.painter.drawTile(paintQueue.poll(), null, null, Tile.Type.EMPTY, painterWait);
     }
 }
