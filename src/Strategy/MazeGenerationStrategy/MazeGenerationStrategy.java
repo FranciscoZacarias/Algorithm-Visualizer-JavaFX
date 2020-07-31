@@ -29,8 +29,17 @@ public abstract class MazeGenerationStrategy
      * Generates a random maze in 'model'. This algorithm handles the tile type changes
      * @param model Grid
      */
-    public abstract void generate(Grid model);
+    public final void generate(Grid model)
+    {
+        model.clearGrid();
+        this.setDefaultWalls(model.getGrid(), model.getXSize(), model.getYSize());
+        
+        this.algorithm(model);
+    }
 
+    
+    public abstract void algorithm(Grid model);
+    
     /**
      * All 'generate' algorithms must call this function once in the beginning.
      * This function will set any not even Tiles to a WALL.
@@ -46,13 +55,14 @@ public abstract class MazeGenerationStrategy
     {
         Tile temp;
         for(int y = 0; y < y_size; y++)
+            
         {
             for(int x = 0; x < x_size; x++)
             {
                 temp = grid[x][y];
                 if((y % 2 != 0) || (x % 2 != 0)) 
                 {
-                    this.painter.drawTile(temp, null, null, Tile.Type.WALL, 3);
+                    this.painter.drawTile(temp, null, null, Tile.Type.WALL, 1);
                 }
             }
         }
