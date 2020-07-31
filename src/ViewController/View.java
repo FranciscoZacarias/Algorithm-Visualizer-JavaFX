@@ -8,7 +8,9 @@ package ViewController;
 import Model.Grid;
 import Model.PathfindingStatistics;
 import Model.Tile;
+import Strategy.MazeGenerationStrategy.MazeGenerationStrategy;
 import Strategy.PathfindingStrategy.AStarStrategy;
+import Strategy.PathfindingStrategy.PathfindingStrategy;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -91,9 +93,9 @@ public class View implements Observer
     
     // Attributes
     private final int padding = 2;
-    private final String defaultXSize = "51";
-    private final String defaultYSize = "35";
-    private final String defaultTileSize = "20";
+    private final String defaultXSize = "77";
+    private final String defaultYSize = "51";
+    private final String defaultTileSize = "14";
     private final double leftPanelSize = 0.20;
     private final Font defaultFont = Font.font("Courier New", 14);
     private final String defaultHboxStyle = "-fx-padding: 10;" 
@@ -166,7 +168,7 @@ public class View implements Observer
         hboxAlgorithmTxt.getChildren().addAll(txtAlgorithms, separatorAlgo, txtAlgorithmsHeuristic);
         HBox hboxcbAlgorithmBox = new HBox(padding);
         hboxcbAlgorithmBox.setAlignment(Pos.CENTER);
-        cbAlgorithmBox = new ComboBox(FXCollections.observableArrayList(Grid.Algorithms.values()));
+        cbAlgorithmBox = new ComboBox(FXCollections.observableArrayList(PathfindingStrategy.Algorithms.values()));
         cbAlgorithmBox.getSelectionModel().selectFirst();
         cbAlgorithmBox.setTooltip(new Tooltip("Algorithm picker"));
         cbHeuristicBox = new ComboBox(FXCollections.observableArrayList(AStarStrategy.Heuristic.values()));
@@ -204,7 +206,7 @@ public class View implements Observer
         hboxMaze.getChildren().add(txtMaze);
         HBox hboxMazeGen = new HBox(padding);
         hboxMazeGen.setAlignment(Pos.CENTER);
-        cbMazeGenBox = new ComboBox(FXCollections.observableArrayList(Grid.MazeGen.values()));
+        cbMazeGenBox = new ComboBox(FXCollections.observableArrayList(MazeGenerationStrategy.MazeGen.values()));
         cbMazeGenBox.getSelectionModel().selectFirst();
         cbMazeGenBox.setTooltip(new Tooltip("Maze generation algorithm picker"));
         btnMaze = new Button("MAZE GEN");
@@ -311,7 +313,7 @@ public class View implements Observer
         // Generates a random maze
         btnMaze.setOnAction((event) ->
         {
-            FXCollections.observableArrayList(Grid.MazeGen.values()).stream().filter((item) -> (cbMazeGenBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
+            FXCollections.observableArrayList(MazeGenerationStrategy.MazeGen.values()).stream().filter((item) -> (cbMazeGenBox.getValue().toString().equals(item.toString()))).forEachOrdered((item) ->
             {
                 if(gridPane != null)
                     controller.doGenerateMaze(item);
@@ -336,10 +338,10 @@ public class View implements Observer
         // Run pathfinding algorithms
         btnRun.setOnAction((event) -> 
         {
-            Grid.Algorithms algorithm = null;
+            PathfindingStrategy.Algorithms algorithm = null;
             AStarStrategy.Heuristic heuristic = null;
             
-            for(Grid.Algorithms algo : FXCollections.observableArrayList(Grid.Algorithms.values()))
+            for(PathfindingStrategy.Algorithms algo : FXCollections.observableArrayList(PathfindingStrategy.Algorithms.values()))
             {
                 if(algo == cbAlgorithmBox.getValue())
                 {

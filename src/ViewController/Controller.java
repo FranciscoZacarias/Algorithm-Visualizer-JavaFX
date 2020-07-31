@@ -52,13 +52,13 @@ public class Controller
         this.model.addRandomWalls();
     }
     
-    public void doGenerateMaze(Grid.MazeGen strategy)
+    public void doGenerateMaze(MazeGenerationStrategy.MazeGen strategy)
     {
         MazeGenerationStrategy mazeGenerationStrategy = StrategyFactory.getMazeGenStrategy(strategy);
         this.model.generateRandomMaze(mazeGenerationStrategy);
     }
     
-    public boolean doShortestPathAlgorithm(Grid.Algorithms algorithm, AStarStrategy.Heuristic heuristic) throws InterruptedException
+    public boolean doShortestPathAlgorithm(PathfindingStrategy.Algorithms algorithm, AStarStrategy.Heuristic heuristic) throws InterruptedException
     {
         HeuristicStrategy heuristicStrategy = StrategyFactory.getHeuristicStrategy(heuristic);
         PathfindingStrategy pathfindingStrategy = StrategyFactory.getPathfindingStrategy(algorithm, heuristicStrategy);

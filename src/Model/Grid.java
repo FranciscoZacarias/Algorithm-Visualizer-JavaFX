@@ -19,17 +19,7 @@ import java.util.Random;
  * @author frank
  */
 public class Grid extends Observable implements Observer
-{
-    public static enum Algorithms{
-        Dijkstra,
-        AStar,
-        AStarOptimal
-    }
-    
-    public static enum MazeGen{
-        Backtracking
-    }
-    
+{    
     // Dimensions
     private int x_size;
     private int y_size;
@@ -65,7 +55,7 @@ public class Grid extends Observable implements Observer
         
         List<Tile> path = new ArrayList<>();
         
-        int cost = pathfindingStrategy.algorithm(this, path);
+        pathfindingStrategy.algorithm(this, path);
         
         return true;
     }

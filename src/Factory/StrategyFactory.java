@@ -13,6 +13,7 @@ import Strategy.HeuristicStrategy.EuclideanStrategy;
 import Strategy.HeuristicStrategy.HeuristicStrategy;
 import Strategy.HeuristicStrategy.ManhattanStrategy;
 import Strategy.HeuristicStrategy.PythagorasStrategy;
+import Strategy.MazeGenerationStrategy.EllerStrategy;
 import Strategy.PathfindingStrategy.AStarStrategy;
 import Strategy.PathfindingStrategy.DijkstraStrategy;
 import Strategy.PathfindingStrategy.PathfindingStrategy;
@@ -24,7 +25,7 @@ import Strategy.PathfindingStrategy.PathfindingStrategy;
 public class StrategyFactory
 {
     // Pathfinding Factory
-    public static PathfindingStrategy getPathfindingStrategy(Grid.Algorithms algorithmStrategy, HeuristicStrategy heuristicStrategy)
+    public static PathfindingStrategy getPathfindingStrategy(PathfindingStrategy.Algorithms algorithmStrategy, HeuristicStrategy heuristicStrategy)
     {
         switch(algorithmStrategy)
         {
@@ -58,12 +59,14 @@ public class StrategyFactory
     }
     
     // Maze generation Factory
-    public static MazeGenerationStrategy getMazeGenStrategy(Grid.MazeGen strategy)
+    public static MazeGenerationStrategy getMazeGenStrategy(MazeGenerationStrategy.MazeGen strategy)
     {
         switch(strategy)
         {
             case Backtracking:
                return new BacktrackingStrategy();
+            case Eller:
+                return new EllerStrategy();
             default:
                 throw new IllegalArgumentException("Pathfinding algorithm not found!");
         }

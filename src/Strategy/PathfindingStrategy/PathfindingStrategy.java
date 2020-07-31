@@ -21,6 +21,13 @@ public abstract class PathfindingStrategy
     protected Painter painter;
     protected PathfindingStatistics statistics;
     
+    // Pathfinding algorithms
+    public static enum Algorithms{
+        Dijkstra,
+        AStar,
+        AStarOptimal
+    }
+    
     public PathfindingStrategy()
     {
         this.painter = Painter.getInstance();
@@ -32,7 +39,7 @@ public abstract class PathfindingStrategy
      * @param path [out] output parameter with the resulting shortest path
      * @return int cost of the found path 
      */
-    public int algorithm(Grid model, List<Tile> path)
+    public final int algorithm(Grid model, List<Tile> path)
     {
         // (...) Statistics
         long start = System.nanoTime();

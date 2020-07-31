@@ -19,6 +19,12 @@ public abstract class MazeGenerationStrategy
     protected Painter painter;
     protected long painterWait;
     
+    // Maze generation algorithms
+    public static enum MazeGen{
+        Backtracking,
+        Eller
+    }
+    
     public MazeGenerationStrategy()
     {
         this.painter = Painter.getInstance();
