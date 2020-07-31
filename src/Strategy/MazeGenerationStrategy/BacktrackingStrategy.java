@@ -55,29 +55,6 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
             neighbors.add((temp.getX() % 2 != 0) ? model.getGrid()[temp.getX() + 1][temp.getY()] : temp);
     }
     
-    /**
-     * Removes a WALL places between Tile a and Tile b
-     * @param grid Tile[][]
-     * @param a Tile 
-     * @param b Tile
-     */
-    private void removeWallBetween(Tile[][] grid, Tile a, Tile b, Queue<Tile> paintQueue)
-    {
-        int x = a.getX();
-        int y = a.getY();
-        
-        // Remove wall between currentTile and randomNeighbor
-        if     (a.getX() < b.getX()) x += 1;
-        else if(a.getY() < b.getY()) y += 1;
-        else if(a.getX() > b.getX()) x -= 1;
-        else if(a.getY() > b.getY()) y -= 1;
-        
-        // This logic is for visualization
-        this.painter.drawTile(paintQueue.poll(), null, null, Tile.Type.EMPTY, painterWait);
-        paintQueue.add(grid[x][y]);
-        this.painter.drawTile(grid[x][y], null, null, Tile.Type.HIGHLIGHT, this.painterWait);
-    }
-    
     @Override
     public void algorithm(Grid model)
     {

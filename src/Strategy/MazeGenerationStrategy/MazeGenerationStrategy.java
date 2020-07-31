@@ -8,6 +8,7 @@ package Strategy.MazeGenerationStrategy;
 import Model.Grid;
 import Model.Tile;
 import Util.Painter;
+import java.util.Queue;
 import java.util.Random;
 /**
  *
@@ -37,9 +38,11 @@ public abstract class MazeGenerationStrategy
      */
     public final void generate(Grid model)
     {
+        // template
         model.clearGrid();
         this.setDefaultWalls(model.getGrid(), model.getXSize(), model.getYSize());
         
+        // maze gen algorithm
         this.algorithm(model);
     }
 
@@ -61,7 +64,6 @@ public abstract class MazeGenerationStrategy
     {
         Tile temp;
         for(int y = 0; y < y_size; y++)
-            
         {
             for(int x = 0; x < x_size; x++)
             {
@@ -72,6 +74,30 @@ public abstract class MazeGenerationStrategy
                 }
             }
         }
+    }
+    
+    /**
+     * Removes a WALL places between Tile a and Tile b
+     * @param grid Tile[][]
+     * @param a Tile 
+     * @param b Tile
+     * @param paintQueue for visualization purposes
+     */
+    protected void removeWallBetween(Tile[][] grid, Tile a, Tile b, Queue<Tile> paintQueue)
+    {
+        int x = a.getX();
+        int y = a.getY();
+        
+        // Remove wall between currentTile and randomNeighbor
+        if     (a.getX() < b.getX()) x += 1;
+        else if(a.getY() < b.getY()) y += 1;
+        else if(a.getX() > b.getX()) x -= 1;
+        else if(a.getY() > b.getY()) y -= 1;
+        
+        // This logic is for visualization
+        this.painter.drawTile(paintQueue.poll(), null, null, Tile.Type.EMPTY, painterWait);
+        paintQueue.add(grid[x][y]);
+        this.painter.drawTile(grid[x][y], null, null, Tile.Type.HIGHLIGHT, this.painterWait);
     }
     
     /**
