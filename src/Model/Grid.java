@@ -331,19 +331,24 @@ public class Grid extends Observable implements Observer
     }
     
     /**
-     * Adds random walls to some tiles in the grid
+     * resets previous walls and adds new random walls to some tiles in the grid
      */
     public void addRandomWalls()
     {
-        this.clearGrid();
+        //this.clearGrid();
         Random random = new Random();
+        Tile tile;
         
         for(int y = 0; y < this.y_size; y++)
         {
             for(int x = 0; x < this.x_size; x++)
             {
+                tile = grid[x][y];
+                if(tile.getType() == Tile.Type.WALL)
+                    tile.setAttributes(Tile.Type.EMPTY, tile.getWeight());
+                
                 if((random.nextInt(2 - 0 + 1) + 0) == 1)
-                    grid[x][y].setAttributes(Tile.Type.WALL, grid[x][y].getDefaultWeight());
+                    tile.setAttributes(Tile.Type.WALL, tile.getWeight());
             }
         }
     }
