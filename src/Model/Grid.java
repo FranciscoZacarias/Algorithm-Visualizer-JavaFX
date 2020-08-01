@@ -142,6 +142,8 @@ public class Grid extends Observable implements Observer
      */
     public void clearGrid()
     {
+        this.painter.cancelTasks();
+        
         for(int y = 0; y < this.y_size; y++)
         {
             for(int x = 0; x < this.x_size; x++)

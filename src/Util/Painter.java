@@ -9,7 +9,7 @@ import Model.Grid;
 import Model.Tile;
 import Strategy.PathfindingStrategy.PathfindingStrategy;
 import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,11 +21,11 @@ import java.util.logging.Logger;
 public final class Painter
 {
     private static final Painter INSTANCE = new Painter();
-    private final Executor executor;
+    private ExecutorService executor;
     
     private Painter()
     {
-        executor = Executors.newSingleThreadExecutor();
+        this.executor = Executors.newSingleThreadExecutor();
     }
     
     /**
@@ -112,5 +112,11 @@ public final class Painter
                 }
             }
         });
+    }
+    
+    public void cancelTasks()
+    {
+        this.executor.shutdownNow();
+        this.executor = Executors.newSingleThreadExecutor();
     }
 }
