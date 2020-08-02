@@ -33,6 +33,8 @@ Also, keep in mind that I am sure some of these could work with weights and guar
 Dijkstra's shortest path algorithm guarantees the shortest path between two nodes, if it exists.
 ![Dijkstra](example/dijkstra.gif)
 Dijkstra algorithm running
+![Weight Dijkstra](example/weightdijkstra.gif)
+Dijkstra algorithm running with weighted nodes
 #### A* 
 The A* algorithm is known for it's optimal efficiency. It works based on a heuristic that tries to estimate the distance between the root and the target node (no heuristic should ever overshoot the actual distance).
 I've implemented the A* that stops immediately once it sees the target (which will not necessarily find the shortest path, as it did not visit all the possible nodes) and what I called A*Optimal, which searches all nodes in the grid and guarantees the shortest path.
