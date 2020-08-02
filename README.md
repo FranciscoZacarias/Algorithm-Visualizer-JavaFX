@@ -25,6 +25,8 @@ A quick introduction to pathfinding algorithms. All of these algorithms introduc
 | A*              | True             | False                   |
 | A* Optimal      | True             | True                    |
 | WavePropagation | False            | False                   |
+
+
 Also, keep in mind that I am sure some of these could work with weights and guarantee shortest path, but only represents my implementations.
 
 #### Dijkstra
