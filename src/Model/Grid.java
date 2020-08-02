@@ -335,7 +335,6 @@ public class Grid extends Observable implements Observer
      */
     public void addRandomWalls()
     {
-        //this.clearGrid();
         Random random = new Random();
         Tile tile;
         

@@ -25,7 +25,8 @@ public abstract class PathfindingStrategy
     public static enum Algorithms{
         Dijkstra,
         AStar,
-        AStarOptimal
+        AStarOptimal,
+        WavePropagation
     }
     
     public PathfindingStrategy()

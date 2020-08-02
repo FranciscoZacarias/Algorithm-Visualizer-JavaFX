@@ -13,10 +13,11 @@ import Strategy.HeuristicStrategy.EuclideanStrategy;
 import Strategy.HeuristicStrategy.HeuristicStrategy;
 import Strategy.HeuristicStrategy.ManhattanStrategy;
 import Strategy.HeuristicStrategy.PythagorasStrategy;
-import Strategy.MazeGenerationStrategy.EllerStrategy;
+import Strategy.MazeGenerationStrategy.KruskalStrategy;
 import Strategy.PathfindingStrategy.AStarStrategy;
 import Strategy.PathfindingStrategy.DijkstraStrategy;
 import Strategy.PathfindingStrategy.PathfindingStrategy;
+import Strategy.PathfindingStrategy.WavePropagationStrategy;
 
 /**
  * Factory that returns a pathfinding strategy
@@ -35,6 +36,8 @@ public class StrategyFactory
                 return new AStarStrategy(false, heuristicStrategy);
             case AStarOptimal:
                 return new AStarStrategy(true, heuristicStrategy);
+            case WavePropagation:
+                return new WavePropagationStrategy();
             default:
                 throw new IllegalArgumentException("Pathfinding algorithm not found!");
         }
@@ -63,10 +66,10 @@ public class StrategyFactory
     {
         switch(strategy)
         {
-            case Backtracking:
+            case Backtracker:
                return new BacktrackingStrategy();
-            case Eller:
-                return new EllerStrategy();
+            case Kruskal:
+                return new KruskalStrategy();
             default:
                 throw new IllegalArgumentException("Pathfinding algorithm not found!");
         }

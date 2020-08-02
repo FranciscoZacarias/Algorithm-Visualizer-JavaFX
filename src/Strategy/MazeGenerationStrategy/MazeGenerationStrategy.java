@@ -22,8 +22,8 @@ public abstract class MazeGenerationStrategy
     
     // Maze generation algorithms
     public static enum MazeGen{
-        Backtracking,
-        Eller
+        Backtracker,
+        Kruskal
     }
     
     public MazeGenerationStrategy()
