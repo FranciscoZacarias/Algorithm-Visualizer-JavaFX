@@ -46,6 +46,11 @@ public class WavePropagationStrategy extends PathfindingStrategy
         return cost;
     }
     
+    /**
+     * Executes a wave propagation algorithm to find the path between root and target
+     * @param model
+     * @param tileData 
+     */
     private void executeWavePropagation(Grid model, HashMap<Tile, Integer> tileData)
     {
         // Keeps track of visited tiles
@@ -91,6 +96,12 @@ public class WavePropagationStrategy extends PathfindingStrategy
         }
     }
     
+    /**
+     * Builds path based on hashmap distances collected from algorithm
+     * @param path [out] path list to store the final path
+     * @param model grid
+     * @param data hashmap mapping tiles to their distances
+     */
     private void buildPath(List<Tile> path, Grid model, HashMap<Tile, Integer> data)
     {
         Tile currentTile = model.getTarget();
