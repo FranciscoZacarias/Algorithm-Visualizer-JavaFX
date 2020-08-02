@@ -7,7 +7,6 @@ package Factory;
 
 import Strategy.MazeGenerationStrategy.BacktrackingStrategy;
 import Strategy.MazeGenerationStrategy.MazeGenerationStrategy;
-import Model.Grid;
 import Strategy.HeuristicStrategy.DiagonalStrategy;
 import Strategy.HeuristicStrategy.EuclideanStrategy;
 import Strategy.HeuristicStrategy.HeuristicStrategy;
