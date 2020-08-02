@@ -76,7 +76,6 @@ public class AStarStrategy extends PathfindingStrategy
         if(!path.isEmpty())
         {
             this.statistics.setPathFound(true, cost);
-            painter.drawPath(path, model);
         }
         
         return cost;

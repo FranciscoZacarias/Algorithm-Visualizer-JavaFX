@@ -54,6 +54,7 @@ public abstract class PathfindingStrategy
         long end = System.nanoTime();
         this.statistics.setElapsedTime(end - start);
         this.statistics.updateObservers();
+        this.painter.drawPath(path, model);
         
         System.out.println(this.statistics);
         

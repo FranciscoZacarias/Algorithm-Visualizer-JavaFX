@@ -47,7 +47,6 @@ public class DijkstraStrategy extends PathfindingStrategy
             } while (tile != root);
             
             this.statistics.setPathFound(true, cost);
-            painter.drawPath(path, grid);
         }
         
         return cost;
