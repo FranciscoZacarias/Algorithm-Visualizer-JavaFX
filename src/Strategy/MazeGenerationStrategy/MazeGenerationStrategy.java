@@ -62,16 +62,11 @@ public abstract class MazeGenerationStrategy
      */
     protected void setDefaultWalls(Tile[][] grid, int x_size, int y_size)
     {
-        Tile temp;
         for(int y = 0; y < y_size; y++)
         {
             for(int x = 0; x < x_size; x++)
             {
-                temp = grid[x][y];
-                if((y % 2 != 0) || (x % 2 != 0)) 
-                {
-                    this.painter.drawTile(temp, null, null, Tile.Type.WALL, 1);
-                }
+                this.painter.drawTile(grid[x][y], null, null, Tile.Type.WALL, 3);
             }
         }
     }
@@ -83,7 +78,7 @@ public abstract class MazeGenerationStrategy
      * @param b Tile
      * @param paintQueue for visualization purposes
      */
-    protected void removeWallBetween(Tile[][] grid, Tile a, Tile b, Queue<Tile> paintQueue)
+    protected void removeWallBetween(Tile[][] grid, Tile a, Tile b)
     {
         int x = a.getX();
         int y = a.getY();
@@ -95,9 +90,17 @@ public abstract class MazeGenerationStrategy
         else if(a.getY() > b.getY()) y -= 1;
         
         // This logic is for visualization
-        this.painter.drawTile(paintQueue.poll(), null, null, Tile.Type.EMPTY, painterWait);
-        paintQueue.add(grid[x][y]);
-        this.painter.drawTile(grid[x][y], null, null, Tile.Type.HIGHLIGHT, this.painterWait);
+        this.highlightTile(grid[x][y]);
+    }
+    
+    /**
+     * Highlights a tile for 'this.painterWait' seconds, before turning it back to empty
+     * @param tile Tile to highlight
+     */
+    protected void highlightTile(Tile tile)
+    {
+        this.painter.drawTile(tile, null, null, Tile.Type.HIGHLIGHT, painterWait);
+        this.painter.drawTile(tile, null, null, Tile.Type.EMPTY, 2);
     }
     
     /**

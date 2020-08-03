@@ -10,9 +10,7 @@ import Model.Tile;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
@@ -58,8 +56,6 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
     @Override
     public void algorithm(Grid model)
     {
-        Queue<Tile> paintQueue = new LinkedList<>();
-        
         // Grid
         Tile[][] grid = model.getGrid();
         
@@ -77,9 +73,6 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
         
         stack.push(currentTile);
         visited.add(currentTile);
-        
-        paintQueue.add(currentTile);
-        this.painter.drawTile(currentTile, null, null, Tile.Type.HIGHLIGHT, painterWait);
         
         while(!stack.isEmpty())
         {
@@ -102,7 +95,7 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
             this.painter.drawTile(randomNeighbor, null, null, Tile.Type.EMPTY, this.painterWait);
             
             // Remove walls in between
-            this.removeWallBetween(grid, currentTile, randomNeighbor, paintQueue);
+            this.removeWallBetween(grid, currentTile, randomNeighbor);
             
             // Set picked neighbor as current tile for next 
             currentTile = randomNeighbor;
@@ -112,12 +105,7 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
             stack.push(randomNeighbor);
             
             //  This is logic for visualization
-            this.painter.drawTile(paintQueue.poll(), null, null, Tile.Type.EMPTY, painterWait);
-            paintQueue.add(randomNeighbor);
-            this.painter.drawTile(randomNeighbor, null, null, Tile.Type.HIGHLIGHT, painterWait);
+            this.highlightTile(randomNeighbor);
         }
-        
-        while(!paintQueue.isEmpty())
-            this.painter.drawTile(paintQueue.poll(), null, null, Tile.Type.EMPTY, painterWait);
     }
 }
