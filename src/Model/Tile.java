@@ -15,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 /**
  *
@@ -60,6 +61,7 @@ public class Tile extends Observable
     private int weight;
     private Type type;
     private final double tileGap = 0;
+    private final int size;
     
     public Tile(int x, int y, int size)
     {
@@ -98,6 +100,7 @@ public class Tile extends Observable
         // Attributes
         this.weight = defaultWeight;
         this.type = Type.EMPTY;
+        this.size = size;
         
         // Tile content
         this.rectangle = new Rectangle(size - tileGap, size - tileGap);
@@ -120,6 +123,25 @@ public class Tile extends Observable
     public StackPane getStackPane()
     {
         return this.pane;
+    }
+    
+    /**
+     * Toggles coordinates to appear in this tiles' pane
+     * @param toAdd true if it's to add coords, false if it's to remove
+     */
+    public void toggleCoords(boolean toAdd)
+    {
+        if(toAdd)
+        {
+            Text coords = new Text(String.format("%d,%d", this.x, this.y));
+            
+            //  for size 20 - 6
+            
+            coords.setStyle(String.format("-fx-font: %d arial;", (size * 6) / 20));
+            pane.getChildren().add(coords);
+        }
+        else
+            pane.getChildren().remove(1);
     }
     
     /**

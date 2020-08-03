@@ -86,6 +86,21 @@ public class Grid extends Observable implements Observer
     }
     
     /**
+     * Toggles all tiles to show respective coordinates
+     * @param toAdd toAdd true if it's to add coords, false if it's to remove
+     */
+    public void toggleCoords(boolean toAdd)
+    {
+        for(int y = 0; y < this.y_size; y++)
+        {
+            for(int x = 0; x < this.x_size; x++)
+            {
+                grid[x][y].toggleCoords(toAdd);
+            }
+        }
+    }
+    
+    /**
      * Returns the Tile 2Dimensional vector, representing the grid
      * @return Tile[][] grid
      */

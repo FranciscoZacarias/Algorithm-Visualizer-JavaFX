@@ -58,6 +58,11 @@ public class Controller
         this.model.generateRandomMaze(mazeGenerationStrategy);
     }
     
+    public void doToggleTileCoords(boolean toAdd)
+    {
+        this.model.toggleCoords(toAdd);
+    }
+    
     public boolean doShortestPathAlgorithm(PathfindingStrategy.Algorithms algorithm, AStarStrategy.Heuristic heuristic) throws InterruptedException
     {
         HeuristicStrategy heuristicStrategy = StrategyFactory.getHeuristicStrategy(heuristic);

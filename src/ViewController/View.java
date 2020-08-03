@@ -21,6 +21,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
@@ -81,6 +82,7 @@ public class View implements Observer
     private final ComboBox cbHeuristicBox;
     private final ComboBox cbMazeGenBox;
     private final ComboBox cbNodeBox;
+    private final CheckBox ckbShowCoords;
     
     // Grid
     private final VBox leftPane;
@@ -93,9 +95,9 @@ public class View implements Observer
     
     // Attributes
     private final int padding = 2;
-    private final String defaultXSize = "77";
-    private final String defaultYSize = "51";
-    private final String defaultTileSize = "14";
+    private final String defaultXSize = "33";//"51";
+    private final String defaultYSize = "21";//"31";
+    private final String defaultTileSize = "32";//"20";
     private final double leftPanelSize = 0.20;
     private final Font defaultFont = Font.font("Courier New", 14);
     private final String defaultHboxStyle = "-fx-padding: 10;" 
@@ -133,8 +135,13 @@ public class View implements Observer
         hboxCreateBtn.setAlignment(Pos.CENTER);
         btnCreateGrid = new Button("CREATE NEW GRID");
         btnCreateGrid.setTooltip(new Tooltip("Overrides previous grid"));
-        hboxCreateBtn.getChildren().add(btnCreateGrid);
-        vboxCreateGrid.getChildren().addAll(createPane, hboxCreateBtn);
+        hboxCreateBtn.getChildren().addAll(btnCreateGrid);
+        HBox hboxShowCoords = new HBox(padding);
+        hboxShowCoords.setAlignment(Pos.CENTER);
+        ckbShowCoords = new CheckBox("Show tile coordinates");
+        ckbShowCoords.setTooltip(new Tooltip("Toggle tiles to show their coordinates"));
+        hboxShowCoords.getChildren().add(ckbShowCoords);
+        vboxCreateGrid.getChildren().addAll(createPane, hboxCreateBtn, hboxShowCoords);
         
         //Tile Picker Pane
         HBox hboxNodeBox = new HBox(padding);
@@ -305,6 +312,7 @@ public class View implements Observer
             controller.doAddRandomWeights();
         });
         
+        // Adds random walls
         btnAddWalls.setOnAction((event) -> 
         {
             controller.doAddRandomWalls();
@@ -333,6 +341,12 @@ public class View implements Observer
             // Initializes the grid
             model.gridInit(x, y, size);
             this.fillGrid(model.getGrid());
+        });
+        
+        // Toggles tile coordinates to show on screen
+        ckbShowCoords.setOnAction((event) ->
+        {
+            controller.doToggleTileCoords(ckbShowCoords.isSelected());
         });
         
         // Run pathfinding algorithms
