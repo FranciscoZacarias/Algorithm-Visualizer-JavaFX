@@ -9,10 +9,9 @@ import Model.Grid;
 import Model.Tile;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  *
@@ -25,75 +24,75 @@ public class KruskalStrategy extends MazeGenerationStrategy
     @Override
     public void algorithm(Grid model)
     {
-        HashMap<Tile, Integer> cells = new HashMap<>();
-        ArrayList<Tile> visited = new ArrayList<>();
-        ArrayList<Tile> unvisited = new ArrayList<>();
-        ArrayList<Tile> neighbors = new ArrayList<>();
+        this.getNewRandom();
         
-        // Set each tile as a cell with unique id
+        HashMap<Tile, Integer> cell = new HashMap<>();
+        List<Tile> walls = new ArrayList<>();
+        
+        // Add walls to list
         Tile[][] grid = model.getGrid();
         int id = 0;
-        for(int y = 0; y < model.getYSize(); y += 2)
+        for(int y = 0; y < model.getYSize(); y++)
         {
-            for(int x = 0; x < model.getXSize(); x += 2)
+            for(int x = 0; x < model.getXSize(); x++)
             {
-                grid[x][y].toggleCoords(true, String.format("%d", id));
-                cells.put(grid[x][y], id++);
-                unvisited.add(grid[x][y]);
+                if(x % 2 == 0 && y % 2 == 0)
+                {
+                    grid[x][y].addText(String.valueOf(id));
+                    cell.put(grid[x][y], id++);
+                }
+                else 
+                {
+                    if(x == y) continue;
+                    walls.add(grid[x][y]);
+                }
             }
         }
         
         // Stop when all cells have been visited
-        while(!unvisited.isEmpty())
+        while(!walls.isEmpty())
         {
-            this.getNewRandom();
+            Tile wall = walls.get(this.random.nextInt(walls.size()));
+            walls.remove(wall);
             
-            // Get random tile
-            Tile currentTile = unvisited.get(this.random.nextInt(unvisited.size()));
-            visited.add(currentTile);
-            unvisited.remove(currentTile);
-            this.painter.drawTile(currentTile, null, null, Tile.Type.EMPTY, painterWait);
+            // If wall's y coord is even, we join left and right tile
+            // If wall's x coord is even, we join top and down tile
             
-            // get it's neighbors
-            this.addNeighbors(model, currentTile, neighbors);
-            
-            // Remove from neighbors all cells that belong in the same set as currentCell 
-            Iterator iter = neighbors.iterator();
-            while(iter.hasNext())
-            {
-                Tile tile = (Tile) iter.next();
-                if(Objects.equals(cells.get(tile), cells.get(currentTile)))
-                    iter.remove();
-            }
-            if(neighbors.isEmpty()) continue;
-            
-            //Pick neighbor and change neighbor id to currentTile id
-            Tile neighbor = neighbors.get(this.random.nextInt(neighbors.size()));
-            
-            // If they're different ids, switch them
-            this.removeWallBetween(model.getGrid(), currentTile, neighbor);
-            this.convertCells(cells, cells.get(currentTile), cells.get(neighbor));
-            this.painter.drawTile(neighbor, null, null, Tile.Type.EMPTY, painterWait);
+            if(wall.getY() % 2 == 0)
+                this.clearWallSides(wall, model.getEastTile(wall), model.getWestTile(wall), cell);
+            else if(wall.getX() % 2 == 0)
+                this.clearWallSides(wall, model.getNorthTile(wall), model.getSouthTile(wall), cell);
         }
-        
     }
     
     /**
-     * Converts every key with a value of 'toBeConverted' to the value 'convertToThis'
-     * @param cells hashmap mapping the Tiles to their values
-     * @param convertToThis id for all cells to be converted to
-     * @param toBeConverted id for all cells to be converted to 'convertToThis'
+     * Opens a path from sideA -> Wall -> sideB
+     * Changes sideB ID to sideA's ID
+     * @param wall
+     * @param sideA
+     * @param sizeB
+     * @param cell 
      */
-    private void convertCells(HashMap<Tile, Integer> cells, int convertToThis, int toBeConverted)
+    private void clearWallSides(Tile wall, Tile sideA, Tile sizeB, HashMap<Tile, Integer> cell)
     {
-        Set<Tile> keys = cells.keySet();
-        while(cells.containsValue(toBeConverted))
+        if(Objects.equals(cell.get(sideA), cell.get(sizeB))) return;
+        
+        /**
+         * Because we are joining sideA with sideB, we put the same key for both in the HashMap
+         * We loop all entries in HashMap and replace every tile with sideB's ID with sideA's ID
+         */ 
+        for(Map.Entry me : cell.entrySet())
         {
-            keys.forEach(key -> 
+            if(me.getValue() == cell.get(sizeB))
             {
-                if(cells.get(key) == toBeConverted)
-                    cells.put(key, convertToThis);
-            });
+                cell.replace((Tile)me.getKey(), cell.get(sideA));
+                ((Tile)me.getKey()).addText(String.valueOf(cell.get(sideA)));
+            }
         }
+
+        long timeWait = 250;
+        this.painter.drawTile(sideA, null, null, Tile.Type.EMPTY, timeWait);
+        this.painter.drawTile(wall, null, null, Tile.Type.EMPTY, timeWait);
+        this.painter.drawTile(sizeB, null, null, Tile.Type.EMPTY, timeWait);
     }
 }
