@@ -9,7 +9,6 @@ import Model.Grid;
 import Model.Tile;
 import Util.Painter;
 import java.util.List;
-import java.util.Queue;
 import java.util.Random;
 /**
  *

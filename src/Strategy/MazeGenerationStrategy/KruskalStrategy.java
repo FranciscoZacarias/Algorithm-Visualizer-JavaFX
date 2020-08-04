@@ -9,6 +9,7 @@ import Model.Grid;
 import Model.Tile;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,10 +38,7 @@ public class KruskalStrategy extends MazeGenerationStrategy
             for(int x = 0; x < model.getXSize(); x++)
             {
                 if(x % 2 == 0 && y % 2 == 0)
-                {
-                    grid[x][y].addText(String.valueOf(id));
                     cell.put(grid[x][y], id++);
-                }
                 else 
                 {
                     if(x == y) continue;
@@ -57,7 +55,6 @@ public class KruskalStrategy extends MazeGenerationStrategy
             
             // If wall's y coord is even, we join left and right tile
             // If wall's x coord is even, we join top and down tile
-            
             if(wall.getY() % 2 == 0)
                 this.clearWallSides(wall, model.getEastTile(wall), model.getWestTile(wall), cell);
             else if(wall.getX() % 2 == 0)
@@ -77,22 +74,37 @@ public class KruskalStrategy extends MazeGenerationStrategy
     {
         if(Objects.equals(cell.get(sideA), cell.get(sizeB))) return;
         
+        Integer bVal = cell.get(sizeB);
+        List<Tile> change = new ArrayList<>();
+        
         /**
          * Because we are joining sideA with sideB, we put the same key for both in the HashMap
          * We loop all entries in HashMap and replace every tile with sideB's ID with sideA's ID
          */ 
-        for(Map.Entry me : cell.entrySet())
+        Iterator iter = cell.entrySet().iterator();
+        while(iter.hasNext())
         {
-            if(me.getValue() == cell.get(sizeB))
+            Map.Entry me = (Map.Entry) iter.next();
+            
+            if(me.getValue() == bVal)
             {
-                cell.replace((Tile)me.getKey(), cell.get(sideA));
-                ((Tile)me.getKey()).addText(String.valueOf(cell.get(sideA)));
+                iter.remove();
+                change.add((Tile) me.getKey());
             }
         }
+        
+        for(Tile tile : change)
+        {
+            cell.put(tile, cell.get(sideA));
+        }
 
-        long timeWait = 250;
+        // Visualization logic
+        long timeWait = 10;
+        this.painter.drawTile(sideA, null, null, Tile.Type.HIGHLIGHT, timeWait);
         this.painter.drawTile(sideA, null, null, Tile.Type.EMPTY, timeWait);
+        this.painter.drawTile(wall, null, null, Tile.Type.HIGHLIGHT, timeWait);
         this.painter.drawTile(wall, null, null, Tile.Type.EMPTY, timeWait);
+        this.painter.drawTile(sizeB, null, null, Tile.Type.HIGHLIGHT, timeWait);
         this.painter.drawTile(sizeB, null, null, Tile.Type.EMPTY, timeWait);
     }
 }
