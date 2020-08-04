@@ -66,17 +66,16 @@ public abstract class MazeGenerationStrategy
         {
             for(int x = 0; x < x_size; x++)
             {
-                this.painter.drawTile(grid[x][y], null, null, Tile.Type.WALL, 3);
+                grid[x][y].setAttributes(Tile.Type.WALL, grid[x][y].getDefaultWeight());
             }
         }
     }
     
     /**
-     * Removes a WALL places between Tile a and Tile b
+     * Removes a WALL placed between Tile a and Tile b
      * @param grid Tile[][]
      * @param a Tile 
      * @param b Tile
-     * @param paintQueue for visualization purposes
      */
     protected void removeWallBetween(Tile[][] grid, Tile a, Tile b)
     {

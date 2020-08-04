@@ -134,9 +134,7 @@ public class Tile extends Observable
         if(toAdd)
         {
             Text coords = new Text(String.format("%d,%d", this.x, this.y));
-            
-            //  for size 20 - 6
-            
+            // Scale: For a tile of size 20, font size is 6
             coords.setStyle(String.format("-fx-font: %d arial;", (size * 6) / 20));
             pane.getChildren().add(coords);
         }
@@ -168,7 +166,6 @@ public class Tile extends Observable
         }
         
         this.rectangle.setFill(color);
-        
         this.type = type;
         this.weight = weight;
         updateTooltip(null);

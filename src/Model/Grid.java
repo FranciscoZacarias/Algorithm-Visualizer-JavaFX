@@ -368,7 +368,6 @@ public class Grid extends Observable implements Observer
     }
     
     /**
-     * TODO: Extract this method into a maze generating strategy
      * Generates a random maze using a recursive backtracker algorithm
      * @param mazeGenerationStrategy maze generation algorithm
      */
