@@ -61,3 +61,10 @@ Wave propagation algorithm running
 This algorithm picks random directions in the grid to go to, as long as they have not been visited yet. If it sees itself stuck, it backtracks itself to the last node with an available neighbor. If no more are available, it backtracks back to the root node and the algorithm is complete.
 ![Recursive Backtracker](/example/backtracker.gif)
 Recursive backtracker maze generation algorithm
+
+#### Kruskal's Algorithm randomized for maze generation
+
+This algorithm is a twist on the Kruskal's algorithm for producing a minimal spanning tree from a weighted graph. Instead of pulling edges with the lowest weight, we pull random edges (or walls) and carve a path from there.
+While it doesn't produce a particularly 'pretty' maze, the algorithm process does look cool!
+![Recursive Backtracker](/example/kruskal.gif)
+Kruskal's algorithm for maze generation
