@@ -128,12 +128,13 @@ public class Tile extends Observable
     /**
      * Toggles coordinates to appear in this tiles' pane
      * @param toAdd true if it's to add coords, false if it's to remove
+     * @param text text to add, null if want to add coords
      */
-    public void toggleCoords(boolean toAdd)
+    public void toggleCoords(boolean toAdd, String text)
     {
         if(toAdd)
         {
-            Text coords = new Text(String.format("%d,%d", this.x, this.y));
+            Text coords = new Text((text == null) ? String.format("%d,%d", this.x, this.y) : text);
             // Scale: For a tile of size 20, font size is 6
             coords.setStyle(String.format("-fx-font: %d arial;", (size * 6) / 20));
             pane.getChildren().add(coords);

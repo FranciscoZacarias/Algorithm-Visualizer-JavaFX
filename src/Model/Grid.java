@@ -95,7 +95,7 @@ public class Grid extends Observable implements Observer
         {
             for(int x = 0; x < this.x_size; x++)
             {
-                grid[x][y].toggleCoords(toAdd);
+                grid[x][y].toggleCoords(toAdd, null);
             }
         }
     }
