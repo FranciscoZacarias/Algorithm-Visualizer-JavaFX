@@ -19,7 +19,7 @@ App window
 
 ## Pathfinding Algorithms
 
-A quick introduction to pathfinding algorithms. All of these algorithms introduce a distinct way to traverse the grid (in this case) and to pathfind from root to the target. Not all of the following algorithms will always return the shortest path nor necessarily work with weights. The following table should clarify this.
+A quick introduction to pathfinding algorithms. All of these algorithms introduce a distinct way to traverse the grid (in this case) and to path find from root to the target. Not all of the following algorithms will always return the shortest path nor necessarily work with weights. The following table should clarify this.
 
 | Algorithm       | Supports Weights | Shortest Path Guarantee |
 | --------------- | ---------------- | ----------------------- |
