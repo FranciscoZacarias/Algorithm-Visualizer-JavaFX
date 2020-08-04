@@ -23,36 +23,6 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
 
     public BacktrackingStrategy(){}
     
-    /**
-     * Adds to 'neighbors' the list of valid neighbors of given 'tile'
-     * @param model [in] model containing the grid
-     * @param tile [in] tile to get neighbors from
-     * @param neighbors [out] empty list to fill with neighbors
-     */
-    private void addNeighbors(Grid model, Tile tile, List<Tile> neighbors)
-    {
-        // Clear neighbors to make sure we work with an empty list
-        neighbors.clear();
-        // Temporary holder for each neighbor
-        Tile temp;
-        
-        temp = model.getNorthTile(tile);
-        if(temp != null)
-            neighbors.add((temp.getY() % 2 != 0) ? model.getGrid()[temp.getX()][temp.getY() - 1] : temp);
-
-        temp = model.getSouthTile(tile);
-        if(temp != null)
-            neighbors.add((temp.getY() % 2 != 0) ? model.getGrid()[temp.getX()][temp.getY() + 1] : temp);
-
-        temp = model.getWestTile(tile);
-        if(temp != null)
-            neighbors.add((temp.getX() % 2 != 0) ? model.getGrid()[temp.getX() - 1][temp.getY()] : temp);
-
-        temp = model.getEastTile(tile);
-        if(temp != null) 
-            neighbors.add((temp.getX() % 2 != 0) ? model.getGrid()[temp.getX() + 1][temp.getY()] : temp);
-    }
-    
     @Override
     public void algorithm(Grid model)
     {
