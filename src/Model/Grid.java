@@ -152,6 +152,21 @@ public class Grid extends Observable implements Observer
     }
     
     /**
+     * Sets the border for all tiles
+     * @param setBorder true to set border, false to remove border
+     */
+    public void addTileBorders(boolean setBorder)
+    {
+        for(int y = 0; y < this.y_size; y++)
+        {
+            for(int x = 0; x < this.x_size; x++)
+            {
+                grid[x][y].setTileStroke(setBorder);
+            }
+        }
+    }
+    
+    /**
      * Returns total amount of walls in the grid
      * @return 
      */

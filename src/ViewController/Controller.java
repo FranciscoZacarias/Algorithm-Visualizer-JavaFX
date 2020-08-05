@@ -52,6 +52,11 @@ public class Controller
         this.model.addRandomWalls();
     }
     
+    public void doToggleTileBorder(boolean setBorder)
+    {
+        this.model.addTileBorders(setBorder);
+    }
+    
     public void doGenerateMaze(MazeGenerationStrategy.MazeGen strategy)
     {
         MazeGenerationStrategy mazeGenerationStrategy = StrategyFactory.getMazeGenStrategy(strategy);

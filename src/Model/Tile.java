@@ -105,7 +105,7 @@ public class Tile extends Observable
         // Tile content
         this.rectangle = new Rectangle(size - tileGap, size - tileGap);
         this.rectangle.setFill(Color.WHITE);
-        rectangle.setStroke(Color.LIGHTGRAY);
+        this.setTileStroke(true);
         
         // build this StackPane
         pane.getChildren().add(rectangle);
@@ -142,6 +142,19 @@ S     */
         }
     }
     
+    /**
+     * toggles tile stroke based on parameter true or false
+     * @param setStroke boolean, true to set a visible stroke, false to remove
+     */
+    public void setTileStroke(boolean setStroke)
+    {
+        this.rectangle.setStroke((setStroke) ? Color.LIGHTGRAY : null);
+    }
+    
+    /**
+     * Add text to this tile
+     * @param text 
+     */
     public void addText(String text)
     {
         this.toggleCoords(false);

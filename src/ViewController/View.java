@@ -83,6 +83,7 @@ public class View implements Observer
     private final ComboBox cbMazeGenBox;
     private final ComboBox cbNodeBox;
     private final CheckBox ckbShowCoords;
+    private final CheckBox ckbSetTileStroke;
     
     // Grid
     private final VBox leftPane;
@@ -138,9 +139,12 @@ public class View implements Observer
         hboxCreateBtn.getChildren().addAll(btnCreateGrid);
         HBox hboxShowCoords = new HBox(padding);
         hboxShowCoords.setAlignment(Pos.CENTER);
-        ckbShowCoords = new CheckBox("Show tile coordinates");
+        ckbShowCoords = new CheckBox("Tile coordinates");
         ckbShowCoords.setTooltip(new Tooltip("Toggle tiles to show their coordinates"));
-        hboxShowCoords.getChildren().add(ckbShowCoords);
+        ckbSetTileStroke = new CheckBox("Tile Border");
+        ckbSetTileStroke.setTooltip(new Tooltip("Toggles tiles to show their border"));
+        ckbSetTileStroke.setSelected(true);
+        hboxShowCoords.getChildren().addAll(ckbShowCoords, ckbSetTileStroke);
         vboxCreateGrid.getChildren().addAll(createPane, hboxCreateBtn, hboxShowCoords);
         
         //Tile Picker Pane
@@ -347,6 +351,11 @@ public class View implements Observer
         ckbShowCoords.setOnAction((event) ->
         {
             controller.doToggleTileCoords(ckbShowCoords.isSelected());
+        });
+        
+        ckbSetTileStroke.setOnAction((event) -> 
+        {
+            controller.doToggleTileBorder(ckbSetTileStroke.isSelected());
         });
         
         // Run pathfinding algorithms
