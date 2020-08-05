@@ -26,7 +26,7 @@ A quick introduction to pathfinding algorithms. All of these algorithms introduc
 | Dijkstra        | True             | True                    |
 | A\*             | True             | False                   |
 | A\* Optimal     | True             | True                    |
-| WavePropagation | False            | False                   |
+| WavePropagation | False            | True                    |
 
 Also keep in mind that this table is specific to my implementations. Some of these could be reworked to do more or less than they do as implemented in this project.
 
