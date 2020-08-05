@@ -7,15 +7,12 @@ package Strategy.PathfindingStrategy;
 
 import Model.Grid;
 import Model.Tile;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import javafx.print.Collation;
 
 /**
  * Wave propagation pathfinding strategy. 
@@ -38,7 +35,7 @@ public class WavePropagationStrategy extends PathfindingStrategy
         this.executeWavePropagation(model, tileData);
         
         this.buildPath(path, model, tileData);
-        int cost = tileData.get(model.getTarget());
+        int cost = tileData.get(model.getTarget()) - 1;
         
         this.statistics.setPathFound(true, cost);
         this.painter.drawPath(path, model);
