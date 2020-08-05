@@ -119,17 +119,7 @@ public abstract class MazeGenerationStrategy
         else if(a.getY() > b.getY()) y -= 1;
         
         // This logic is for visualization
-        this.highlightTile(grid[x][y]);
-    }
-    
-    /**
-     * Highlights a tile for 'this.painterWait' seconds, before turning it back to empty
-     * @param tile Tile to highlight
-     */
-    protected void highlightTile(Tile tile)
-    {
-        this.painter.drawTile(tile, null, null, Tile.Type.HIGHLIGHT, painterWait);
-        this.painter.drawTile(tile, null, null, Tile.Type.EMPTY, 2);
+        this.painter.highlightTile(grid[x][y], this.painterWait);
     }
     
     /**
