@@ -57,6 +57,7 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
             if(neighbors.isEmpty())
             {
                 currentTile = stack.pop();
+                this.painter.highlightTile(currentTile, this.painterWait);
                 continue;
             }
             
@@ -75,7 +76,7 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
             stack.push(randomNeighbor);
             
             //  This is logic for visualization
-            this.highlightTile(randomNeighbor);
+            this.painter.highlightTile(randomNeighbor, this.painterWait);
         }
     }
 }
