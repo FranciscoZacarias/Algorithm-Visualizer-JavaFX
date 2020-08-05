@@ -335,8 +335,11 @@ public class View implements Observer
         // Initialized the grid
         btnCreateGrid.setOnAction((event) ->
         {
+            // Makes sure maze is only generated with odd x and y
             int x = Integer.valueOf(txtXTiles.getText());
+            x = (x % 2 == 0) ? x - 1 : x; 
             int y = Integer.valueOf(txtYTiles.getText());
+            y = (y % 2 == 0) ? y - 1 : y;
             int size = Integer.valueOf(txtTileSize.getText());
             
             if(parentGridPane.getChildren().contains(gridPane))
