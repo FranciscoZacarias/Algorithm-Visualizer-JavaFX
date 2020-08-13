@@ -29,9 +29,6 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
         // Grid
         Tile[][] grid = model.getGrid();
         
-        // Sets new random
-        this.getNewRandom();
-        
         // This stack backtracks the maze
         Stack<Tile> stack = new Stack<>();
         // Keeps track of current tile's neighbors
@@ -57,12 +54,12 @@ public class BacktrackingStrategy extends MazeGenerationStrategy
             if(neighbors.isEmpty())
             {
                 currentTile = stack.pop();
-                this.painter.highlightTile(currentTile, this.painterWait);
+                this.painter.highlightTile(currentTile, painterWait);
                 continue;
             }
             
             // Pick random neighbor from not visited neighbors
-            Tile randomNeighbor = neighbors.get(this.random.nextInt(neighbors.size()));
+            Tile randomNeighbor = neighbors.get(this.getRandomInt(neighbors.size(), 0));
             this.painter.drawTile(randomNeighbor, null, null, Tile.Type.EMPTY, this.painterWait);
             
             // Remove walls in between

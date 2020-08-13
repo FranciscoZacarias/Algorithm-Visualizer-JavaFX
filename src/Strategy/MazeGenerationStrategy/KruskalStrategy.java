@@ -24,9 +24,7 @@ public class KruskalStrategy extends MazeGenerationStrategy
 
     @Override
     public void algorithm(Grid model)
-    {
-        this.getNewRandom();
-        
+    {   
         HashMap<Tile, Integer> cell = new HashMap<>();
         List<Tile> walls = new ArrayList<>();
         
@@ -50,7 +48,7 @@ public class KruskalStrategy extends MazeGenerationStrategy
         // Stop when all cells have been visited
         while(!walls.isEmpty())
         {
-            Tile wall = walls.get(this.random.nextInt(walls.size()));
+            Tile wall = walls.get(this.getRandomInt(walls.size(), 0));
             walls.remove(wall);
             
             // If wall's y coord is even, we join left and right tile

@@ -23,7 +23,8 @@ public abstract class MazeGenerationStrategy
     // Maze generation algorithms
     public static enum MazeGen{
         Backtracker,
-        Kruskal
+        Kruskal,
+        Prim
     }
     
     public MazeGenerationStrategy()
@@ -123,10 +124,14 @@ public abstract class MazeGenerationStrategy
     }
     
     /**
-     * Generates a new random 
+     * Generates a new random between min (as minimum value) and max (as maximum value)
+     * @param max value
+     * @param min value
+     * @return (pseudo)random number generated 
      */
-    protected void getNewRandom()
+    protected int getRandomInt(int max, int min)
     {
         this.random = new Random();
+        return ((int) (Math.random()*(max - min))) + min; 
     }
 }
