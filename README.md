@@ -66,5 +66,10 @@ Recursive backtracker maze generation algorithm
 
 This algorithm is a twist on the Kruskal's algorithm for producing a minimal spanning tree from a weighted graph. Instead of pulling edges with the lowest weight, we pull random edges (or walls) and carve a path from there.
 While it doesn't produce a particularly 'pretty' maze, the algorithm process does look cool!
-![Recursive Backtracker](/example/kruskal.gif)
+![Kruskal's algorithm](/example/kruskal.gif)
 Kruskal's algorithm for maze generation
+
+#### Prim's Algorithm randomized for maze generation
+
+This algorithm, as well as the last one, has it's original purpose on producing minimal spanning trees. This approach differs from the previous by simply growing out of one point, instead of randomly growing throughout the grid.
+![Prim's algorithm](/example/prims.gif)
