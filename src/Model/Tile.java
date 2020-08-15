@@ -5,17 +5,20 @@
  */
 package Model;
 
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Random;
 import java.util.Set;
+import javafx.animation.FillTransition;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 /**
  *
@@ -277,7 +280,7 @@ S     */
      */
     private void setEvents()
     {
-        pane.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent mouseEvent) ->
+        pane.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent me) ->
         {
             // Notifies the @Grid
             setChanged();

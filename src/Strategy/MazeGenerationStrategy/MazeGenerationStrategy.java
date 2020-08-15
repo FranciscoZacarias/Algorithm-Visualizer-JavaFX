@@ -30,7 +30,7 @@ public abstract class MazeGenerationStrategy
     public MazeGenerationStrategy()
     {
         this.painter = Painter.getInstance();
-        this.painterWait = 4;
+        this.painterWait = 4; //4
     }
     
     /**

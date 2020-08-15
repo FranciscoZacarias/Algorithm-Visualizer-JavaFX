@@ -13,6 +13,7 @@ import Strategy.HeuristicStrategy.HeuristicStrategy;
 import Strategy.HeuristicStrategy.ManhattanStrategy;
 import Strategy.HeuristicStrategy.PythagorasStrategy;
 import Strategy.MazeGenerationStrategy.KruskalStrategy;
+import Strategy.MazeGenerationStrategy.PrimStrategy;
 import Strategy.PathfindingStrategy.AStarStrategy;
 import Strategy.PathfindingStrategy.DijkstraStrategy;
 import Strategy.PathfindingStrategy.PathfindingStrategy;
@@ -69,6 +70,8 @@ public class StrategyFactory
                return new BacktrackingStrategy();
             case Kruskal:
                 return new KruskalStrategy();
+            case Prim:
+                return new PrimStrategy();
             default:
                 throw new IllegalArgumentException("Pathfinding algorithm not found!");
         }
