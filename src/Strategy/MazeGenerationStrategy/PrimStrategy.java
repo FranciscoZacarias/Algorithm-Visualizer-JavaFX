@@ -8,11 +8,8 @@ package Strategy.MazeGenerationStrategy;
 import Model.Grid;
 import Model.Tile;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import javafx.util.Pair;
 
 /**
  *
@@ -34,36 +31,41 @@ public class PrimStrategy extends MazeGenerationStrategy
         Tile currentTile = grid[0][0];
         List<Tile> neighbors = new ArrayList<>();
         
-        List<Tile> visited = new ArrayList<>();
-        visited.add(currentTile);
-        List<Node> toVisit = new ArrayList<>();
+        List<Pair<Tile, Tile>> visited = new ArrayList<>();
+        visited.add(new Pair(currentTile, null));
+        List<Pair<Tile, Tile>> toVisit = new ArrayList<>();
         this.addNeighbors(model, currentTile, neighbors);
         
         // Key is tile, value is it's parent
         for(Tile tile: neighbors)
         {
             if(tile != null)
-                toVisit.add(new Node(tile, currentTile));
+                toVisit.add(new Pair(tile, currentTile));
         }
         
+        Tile current, parent;
         while(!toVisit.isEmpty())
         {
             // Grabs random tile from to visit tiles
-            Node randomTile = toVisit.get(this.getRandomInt(toVisit.size(), 0));
+            // For each pair: key is current tile, value is it's parent
+            Pair randomTile = toVisit.get(this.getRandomInt(toVisit.size(), 0));
                     
             toVisit.remove(randomTile);
-            visited.add(randomTile.getTile());
+            visited.add(randomTile);
             
-            this.painter.drawTile(randomTile.getTile(), null, null, Tile.Type.EMPTY, painterWait);
-            this.removeWallBetween(grid, randomTile.getTile(), randomTile.getParentTile());
-            this.painter.drawTile(randomTile.getParentTile(), null, null, Tile.Type.EMPTY, painterWait);
+            current = (Tile) randomTile.getKey();
+            parent = (Tile) randomTile.getValue();
             
-            this.addNeighbors(model, randomTile.getTile(), neighbors);
+            this.painter.drawTile(current, null, null, Tile.Type.EMPTY, painterWait);
+            this.removeWallBetween(grid, current, parent);
+            this.painter.drawTile(parent, null, null, Tile.Type.EMPTY, painterWait);
+            
+            this.addNeighbors(model, current, neighbors);
             for(Tile tile : neighbors)
             {
-                if(!nodeListContainsTile(toVisit, tile) && !visited.contains(tile) && tile != null)
+                if(!pairListContainsTile(toVisit, tile) && !pairListContainsTile(visited, tile) && tile != null)
                 {
-                    toVisit.add(new Node(tile, randomTile.getTile()));
+                    toVisit.add(new Pair(tile, current));
                 }
             }
         }
@@ -75,11 +77,11 @@ public class PrimStrategy extends MazeGenerationStrategy
      * @param tile
      * @return 
      */
-    private boolean nodeListContainsTile(List<Node> nodes, Tile tile)
+    private boolean pairListContainsTile(List<Pair<Tile, Tile>> nodes, Tile tile)
     {
-        for(Node node : nodes)
+        for(Pair pair : nodes)
         {
-            if(node.getTile() == tile)
+            if(pair.getKey() == tile)
                 return true;
         }
         return false;
