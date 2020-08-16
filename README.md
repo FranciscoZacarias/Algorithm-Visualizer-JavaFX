@@ -56,6 +56,8 @@ Wave propagation algorithm running
 
 ## Maze Generation Algorithms
 
+Before we take a look at the maze generation algorithms, I couldn't take another step without mentioning this great [blog](http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap) about it! Surely my job would be much harder had I not found it. Hats off to Jamis Buck.
+
 #### Recursive Backtracker
 
 This algorithm picks random directions in the grid to go to, as long as they have not been visited yet. If it sees itself stuck, it backtracks itself to the last node with an available neighbor. If no more are available, it backtracks back to the root node and the algorithm is complete.
@@ -73,3 +75,4 @@ Kruskal's algorithm for maze generation
 
 This algorithm, as well as the last one, has it's original purpose on producing minimal spanning trees. This approach differs from the previous by simply growing out of one point, instead of randomly growing throughout the grid.
 ![Prim's algorithm](/example/prims.gif)
+Prim's algorithm for maze generation
