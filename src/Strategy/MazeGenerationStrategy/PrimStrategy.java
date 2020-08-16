@@ -86,26 +86,4 @@ public class PrimStrategy extends MazeGenerationStrategy
         }
         return false;
     }
-    
-    private class Node
-    {
-        private final Tile tile;
-        private final Tile parentTile;
-
-        public Node(Tile tile, Tile parentTile)
-        {
-            this.tile = tile;
-            this.parentTile = parentTile;
-        }
-
-        public Tile getTile()
-        {
-            return tile;
-        }
-
-        public Tile getParentTile()
-        {
-            return parentTile;
-        }
-    }
 }
