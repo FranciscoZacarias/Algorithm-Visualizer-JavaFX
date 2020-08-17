@@ -36,7 +36,7 @@ Dijkstra's shortest path algorithm guarantees the shortest path between two node
 ![Dijkstra](example/dijkstra.gif)
 Dijkstra algorithm running
 ![Weight Dijkstra](example/weightdijkstra.gif)
-Dijkstra algorithm running with weighted nodes
+Dijkstra algorithm running with weighted nodes.
 
 #### A\*
 
@@ -46,13 +46,13 @@ I've implemented the A* that stops immediately once it sees the target (which wi
 - Heuristics: This algorithms requires heuristics to run efficiently. For this app (2 dimensional grid), the Manhattan distance is the optimal solution. See [here](https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html) for how do they work.
 
 ![A*](example/astar.gif)
-A\* algorithm running with the Manhattan distance Heuristic
+A\* algorithm running with the Manhattan distance Heuristic.
 
 #### Wave Propagation
 
 It's a much more simple pathfinding algorithm, and I would say not as useful (generally), as it is not the fastest, ignores weights and does not guarantee shortest path.
 ![WavePropagation](example/wave.gif)
-Wave propagation algorithm running
+Wave propagation algorithm running.
 
 ## Maze Generation Algorithms
 
@@ -62,7 +62,7 @@ Before we take a look at the maze generation algorithms, I couldn't take another
 
 This algorithm picks random directions in the grid to go to, as long as they have not been visited yet. If it sees itself stuck, it backtracks itself to the last node with an available neighbor. If no more are available, it backtracks back to the root node and the algorithm is complete.
 ![Recursive Backtracker](/example/backtracker.gif)
-Recursive backtracker maze generation algorithm
+Recursive backtracker maze generation algorithm.
 
 #### Kruskal's Algorithm randomized for maze generation
 
@@ -75,4 +75,4 @@ Kruskal's algorithm for maze generation
 
 This algorithm, as well as the last one, has it's original purpose on producing minimal spanning trees. This approach differs from the previous by simply growing out of one point, instead of randomly growing throughout the grid.
 ![Prim's algorithm](/example/prims.gif)
-Prim's algorithm for maze generation
+Prim's algorithm for maze generation.
