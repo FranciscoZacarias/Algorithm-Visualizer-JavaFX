@@ -24,7 +24,9 @@ public abstract class MazeGenerationStrategy
     public static enum MazeGen{
         Backtracker,
         Kruskal,
-        Prim
+        Prim,
+        RecursiveDivision,
+        HuntAndKill
     }
     
     public MazeGenerationStrategy()

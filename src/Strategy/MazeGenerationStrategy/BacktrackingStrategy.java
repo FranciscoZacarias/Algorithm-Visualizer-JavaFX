@@ -21,7 +21,10 @@ import java.util.Stack;
 public class BacktrackingStrategy extends MazeGenerationStrategy
 {
 
-    public BacktrackingStrategy(){}
+    public BacktrackingStrategy()
+    {
+        super();
+    }
     
     @Override
     public void algorithm(Grid model)

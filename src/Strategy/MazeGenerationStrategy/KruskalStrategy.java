@@ -20,7 +20,10 @@ import java.util.Objects;
  */
 public class KruskalStrategy extends MazeGenerationStrategy
 {
-    public KruskalStrategy(){}
+    public KruskalStrategy()
+    {
+        super();
+    }
 
     @Override
     public void algorithm(Grid model)
