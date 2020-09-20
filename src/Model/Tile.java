@@ -141,6 +141,8 @@ S     */
             Text coords = new Text(String.format("%d,%d", this.x, this.y));
             // Scale: For a tile of size 20, font size is 6
             coords.setStyle(String.format("-fx-font: %d arial;", (size * 6) / 20));
+            Color color = (this.getType() == Tile.Type.WALL) ? Color.WHITE : Color.BLACK;
+            coords.setFill(color);
             pane.getChildren().add(coords);
         }
     }
