@@ -97,9 +97,9 @@ public class View implements Observer
     
     // Attributes
     private final int padding = 2;
-    private final String defaultXSize = "33";//"51";
-    private final String defaultYSize = "21";//"31";
-    private final String defaultTileSize = "32";//"20";
+    private final String defaultXSize = "51";
+    private final String defaultYSize = "31";
+    private final String defaultTileSize = "20";
     private final double leftPanelSize = 0.20;
     private final Font defaultFont = Font.font("Courier New", 14);
     private final String defaultHboxStyle = "-fx-padding: 10;" 
