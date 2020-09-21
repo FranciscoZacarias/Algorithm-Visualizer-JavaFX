@@ -103,6 +103,18 @@ public final class Painter
     }
     
     /**
+     * Highlights a tile for 'this.painterWait' seconds, before turning it 'type' given by parameter
+     * @param tile Tile to highlight
+     * @param type Tile.Type to turn 'tile' back to, after highlighting it
+     * @param waitTime time to wait before next step
+     */
+    public void highlightTile(Tile tile, Tile.Type type, long waitTime)
+    {
+        this.drawTile(tile, null, null, Tile.Type.HIGHLIGHT, waitTime);
+        this.drawTile(tile, null, null, type, waitTime);
+    }
+    
+    /**
      * Clears the previously assigned visited and path tiles
      * @param model 
      */
