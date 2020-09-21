@@ -12,9 +12,9 @@ import Strategy.HeuristicStrategy.EuclideanStrategy;
 import Strategy.HeuristicStrategy.HeuristicStrategy;
 import Strategy.HeuristicStrategy.ManhattanStrategy;
 import Strategy.HeuristicStrategy.PythagorasStrategy;
-import Strategy.MazeGenerationStrategy.HuntKillStrategy;
 import Strategy.MazeGenerationStrategy.KruskalStrategy;
 import Strategy.MazeGenerationStrategy.PrimStrategy;
+import Strategy.MazeGenerationStrategy.SidewinderStrategy;
 import Strategy.PathfindingStrategy.AStarStrategy;
 import Strategy.PathfindingStrategy.DijkstraStrategy;
 import Strategy.PathfindingStrategy.PathfindingStrategy;
@@ -73,8 +73,8 @@ public class StrategyFactory
                 return new KruskalStrategy();
             case Prim:
                 return new PrimStrategy();
-            case HuntAndKill:
-                return new HuntKillStrategy();
+            case Sidewinder:
+                return new SidewinderStrategy();
             default:
                 throw new IllegalArgumentException("Maze generation algorithm not found!");
         }
