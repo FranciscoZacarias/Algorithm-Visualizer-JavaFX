@@ -25,8 +25,7 @@ public abstract class MazeGenerationStrategy
         Backtracker,
         Kruskal,
         Prim,
-        RecursiveDivision,
-        HuntAndKill
+        Sidewinder
     }
     
     public MazeGenerationStrategy()
