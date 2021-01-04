@@ -7,14 +7,6 @@ The app contains a settings panel on the left and a grid where the visualization
 Here's a showcase video:
 [![Showcase video](https://i.ytimg.com/vi/AfZ-rd4iG1E/hqdefault.jpg?sqp=-oaymwEZCPYBEIoBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLAJg1ryivr0ROehHdSxK5w3JnJwrA)](https://www.youtube.com/watch?v=AfZ-rd4iG1E&feature=youtu.be)
 
-## Features
-
-- Tile picker: Allows user to switch select a specific tile and paint it on the grid E.g. select a root and a target tile, add some walls to the grid, add weights etc..
-- Algorithm pickler: Allows the user to pick which pathfinding algorithm he wants to use. It also allows for the user to pick a specific heuristic when using the A\* algorithm.
-- Add random obstacles: Both of these can fill the grid (randomly) with walls and/or weights ranging from 1 to 12, which makes pathfinding much more interesting.
-- Maze generation: Allows the user to pick an algorithm to generate a "random" maze. These algorithms can also be visualized when running.
-- Statistics: Includes statistics for each time user presses run. Such statistics can be seen in their respective row in the app.
-
 # Algorithms
 
 ## Pathfinding Algorithms
@@ -34,7 +26,7 @@ Also keep in mind that this table is specific to my implementations. Some of the
 
 Dijkstra's shortest path algorithm guarantees the shortest path between two nodes, if it exists.
 ![Dijkstra](example/dijkstra.gif)
-Dijkstra algorithm running
+Dijkstra algorithm running without weighted nodes. Because it is weightless, it behaves like a generic breath-first search.
 ![Weight Dijkstra](example/weightdijkstra.gif)
 Dijkstra algorithm running with weighted nodes.
 
