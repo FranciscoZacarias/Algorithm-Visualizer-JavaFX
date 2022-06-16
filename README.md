@@ -4,8 +4,7 @@ This is a personal project that I created to get some hands on on some cool algo
 This project contains both pathfinding and maze generation algorithms, and I'll keep updating them as I go.
 
 The app contains a settings panel on the left and a grid where the visualization will occur. As of now, this grid and the algorithms, only support 4 directions (north, south, east, west).
-Here's a showcase video:
-
+### Here's a showcase video:
 
 [![Showcase video](https://i.ytimg.com/vi/AfZ-rd4iG1E/hqdefault.jpg?sqp=-oaymwEZCPYBEIoBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLAJg1ryivr0ROehHdSxK5w3JnJwrA)](https://www.youtube.com/watch?v=AfZ-rd4iG1E&feature=youtu.be)
 
